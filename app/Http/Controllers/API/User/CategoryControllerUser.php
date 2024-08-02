@@ -49,14 +49,18 @@ class CategoryControllerUser extends Controller
     public function play_game(Request $request)
     {
         try {
+            $category_id = $request->category_id;
             $play_id = $request->play_id;
             $play_name = $request->play_name;
+            $subcategories_id  = SubCategory::where('category_id', $category_id)->get();
+            foreach ($subcategories_id as $key => $category_id) {
+                $category_id_all = $category_id->id;
             $subCategory = SubCategory::find($play_id);
             if ($subCategory && $subCategory->name === $play_name) {
-                $group1 = [1, 5, 9, 13, 17, 21, 25, 29, 33, 37];
-                $group2 = [2, 6, 10, 14, 18, 22, 26, 30, 34, 38];
-                $group3 = [3, 7, 11, 15, 19, 23, 27, 31, 35, 39];
-                $group4 = [4, 8, 12, 16, 20, 24, 28, 32, 36, 40];
+                    $group1 = [$category_id_all];
+                    $group2 = [$category_id_all];
+                    $group3 = [$category_id_all];
+                    $group4 = [$category_id_all];
                 if (in_array($play_id, $group1)) {
                     $play_type = [];
                     for ($i = 0; $i < 100; $i++) {
@@ -122,7 +126,10 @@ class CategoryControllerUser extends Controller
             } else {
                 return response()->json(['status' => 400, 'message' => 'Invalid play_id or play_name.']);
             }
+            }
+
         } catch (\Throwable $th) {
+            dd($th);
             return response()->json(['status' => 500, 'message' => 'An error occurred while processing the request.']);
         }
     }

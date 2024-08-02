@@ -1,11 +1,10 @@
 <?php
+
 namespace App\Console\Commands;
 
 use App\Models\Category;
-use App\Models\Played_Game;
-use App\Models\SubCategory;
+use App\Models\PlayGame;
 use App\Models\Transaction;
-use App\Models\User;
 use Illuminate\Console\Command;
 
 class PlayedGame extends Command
@@ -31,76 +30,65 @@ class PlayedGame extends Command
      */
     public function handle()
     {
+        // Initialize an array to store non-matching totals
+        $non_matching_totals = [];
+
         // Fetch the category with status 'opened'
         $category = Category::where('status', 'opened')->first();
+        $category_id = $category->id;
+        $today_numbers = $category->no_open;
 
-        if ($category) {
-            // Get the category ID and opened number
-            $category_id = $category->id;
-            $opened_number = $category->no_open;
+        if ($category_id) {
+            $playGames = PlayGame::where('category_id', $category_id)->get();
 
-            // Fetch all subcategories of the opened category
-            $subCategories = SubCategory::where('category_id', $category_id)->get();
+            foreach ($playGames as $playgame) {
+                $playgame_id = $playgame->play_game_id;
+                $entered_numbers_today = $playgame->entered_number;
+                $user_id = $playgame->user_id;
+                $entered_amount_today = $playgame->entered_amount;
 
-            foreach ($subCategories as $subCategory) {
-                // Fetch Played_Game records for each subcategory with the specified conditions
-                $playedGames = Played_Game::where('category_id', $category_id)
-                    ->where('play_game_id', $subCategory->id)
-                    ->whereNull('today_number')
-                    ->whereNull('open_time_number')
-                    ->whereIn('status', ['not_opened', 'waiting'])
-                    ->get();
+                if ($today_numbers === $entered_numbers_today) {
+                    // Numbers match
+                    if ($playgame_id == 2) {
+                        $won_price_game = $entered_amount_today * 9;
+                        $this->info('Check for same numbers: ' . $won_price_game . ', User ID: ' . $user_id);
 
-                // Process each played game
-                foreach ($playedGames as $playedGame) {
-                    $entered_number = $playedGame->entered_number;
-                    $entered_amount = $playedGame->entered_amount;
-                    $user_play_game_id = $playedGame->user_id;
+                        // Add a transaction for a win
+                        Transaction::create([
+                            'user_id' => $user_id,
+                            'transaction_type' => 'won',
+                            'amount' => $won_price_game,
+                            'available_balance' => $won_price_game,
+                        ]);
+                    } elseif (in_array($playgame_id, [1, 3, 4])) {
+                        $won_price_game = $entered_amount_today * 95;
+                        $this->info('This is matching numbers for rest of all: ' . $won_price_game . ', User ID: ' . $user_id);
 
-                    // Fetch the user associated with the played game
-                    $user = User::find($user_play_game_id);
-
-                    if ($user) {
-                        if ($entered_number === $opened_number) {
-                            $won_amount = $entered_amount * 90;
-                            $user->balance += $won_amount;
-                            // $user->available_balance += $won_amount;
-
-                            Transaction::create([
-                                'user_id' => $playedGame->user_id,
-                                'amount' => $won_amount,
-                                'transaction_type' => 'won',
-                                'description' => 'Won the game',
-                                'available_balance' => $user->balance,
-                            ]);
-
-                            $playedGame->today_number = $opened_number;
-                            $playedGame->open_time_number = now();
-                            $playedGame->status = 'won';
-                        } else {
-                            Transaction::create([
-                                'user_id' => $playedGame->user_id,
-                                'amount' => $entered_amount,
-                                'transaction_type' => 'loss',
-                                'description' => 'Lost the game',
-                                'available_balance' => $user->available_balance,
-                            ]);
-
-                            $playedGame->today_number = $opened_number;
-                            $playedGame->after_open_number_block = $opened_number; // Assuming the same number is used
-                            $playedGame->open_time_number = now();
-                            $playedGame->status = 'lost';
-                        }
-
-                        // Save the updated user and played game records
-                        $user->save();
-                        $playedGame->save();
+                        // Add a transaction for a win
+                        Transaction::create(['user_id' => $user_id,
+                            'transaction_type' => 'won',
+                            'amount' => $won_price_game
+                        ]);
                     }
+                } else {
+                    // Numbers do not match
+                    if (!isset($non_matching_totals[$user_id])) {
+                        $non_matching_totals[$user_id] = 0;
+                    }
+                    $non_matching_totals[$user_id] += $entered_amount_today;
+                    $this->info('These Numbers Are not matched: ' . $entered_amount_today . ', User ID: ' . $user_id);
                 }
             }
-        } else {
-            // Handle case when no category with status 'opened' is found
-            $this->info('No category with status "opened" found');
+
+            // Add transactions for losses
+            foreach ($non_matching_totals as $user_id => $total_amount) {
+                Transaction::create(['user_id' => $user_id,
+                    'transaction_type' => 'loss',
+                    'amount' => $total_amount,
+                    'available_balance' => $total_amount
+                ]);
+                $this->info('User ID: ' . $user_id . ' Total non-matching amount (loss): ' . $total_amount);
+            }
         }
 
         return 0;

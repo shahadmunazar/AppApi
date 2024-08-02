@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class AddStatusAndIsActiveToCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->enum('status', ['opened', 'not_opened'])->default('not_opened');
+            // Add new fields
+            $table->enum('status', ['waiting', 'opened', ''])->default('waiting')->after('no_open');
+            $table->boolean('is_active')->default(true)->after('status');
         });
     }
 
@@ -26,7 +28,9 @@ return new class extends Migration
     public function down()
     {
         Schema::table('categories', function (Blueprint $table) {
+            // Drop the added fields if rolling back the migration
             $table->dropColumn('status');
+            $table->dropColumn('is_active');
         });
     }
-};
+}

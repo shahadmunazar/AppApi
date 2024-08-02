@@ -16,6 +16,7 @@ class Transaction extends Model
         'description',
         'transaction_date',
         'available_balance',
+        'confirm_payment'
     ];
 
     protected $casts = [

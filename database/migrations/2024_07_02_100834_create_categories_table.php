@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->time('open_time')->nullable();
-            $table->time('last_time')->nullable();
+            $table->string('open_time')->nullable();
+            $table->string('last_time')->nullable();
             $table->integer('no_open')->nullable();
             $table->timestamps();
             $table->softDeletes();
