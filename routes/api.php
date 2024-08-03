@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\Admin\CategoryController;
+use App\Http\Controllers\API\Admin\PlayedGameController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\User\AllTransactionController;
 use App\Http\Controllers\API\User\CategoryControllerUser;
@@ -54,6 +55,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard']);
 
         // Category Routes
+
+        Route::post('open-current-number', [PlayedGameController::class, 'played_game']);
+
         Route::get('get-all-category-list', [CategoryController::class, 'get_All_Category']);
         Route::post('add-category', [CategoryController::class, 'add_category']);
         Route::get('get-category_details/{category_id}', [CategoryController::class, 'GetCategory_Details']);

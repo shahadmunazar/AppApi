@@ -2,47 +2,45 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\SubCategory;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\User;
+use App\Models\Category;
+use App\Models\PlayGame;
 
 class PlayGamesTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
-        // Get all users and categories
         $users = User::all();
         $categories = Category::all();
-        $play_Game_id = SubCategory::all();
+        $playGameIds = [1, 2, 3, 4]; // Adjust as needed
 
-        // Prepare an array to hold the data
-        $playGamesData = [];
+        $playTypes = ['ander_harup', 'bahar_harup']; // Initialize the play types array
+        $playGamesData = []; // Initialize array to hold the play games data
 
-        // Generate 1000 records
-        for ($i = 0; $i < 4599; $i++) {
+        for ($i = 0; $i < 4999; $i++) {
             // Randomly select a user and a category
             $user = $users->random();
             $category = $categories->random();
-            $PlayGame_id = $play_Game_id->random();
+            $playGameId = $playGameIds[array_rand($playGameIds)]; // Randomly select a play game ID
 
-            // Create a new play game record
+            // Ensure entered_number is between 0 and 9 if play_game_id is 2; otherwise, between 0 and 99
+            if ($playGameId === 2) {
+                $enteredNumber = rand(0, 9); // Number between 0 and 9
+            } else {
+                $enteredNumber = rand(0, 99); // Number between 0 and 99
+            }
+
             $playGamesData[] = [
                 'user_id' => $user->id,
                 'user_name' => $user->name,
-                'category_id' => $category->id,
+                'category_id' => 9,
                 'Playing_Name' => 'Game' . rand(1, 10),
-                'play_type' => 'Type' . rand(1, 5),
-                'ander_harup' => 'Option' . rand(1, 10),
-                'bahar_harup' => 'Option' . rand(1, 10),
-                'play_game_id' => $PlayGame_id->id,
-                'entered_number' => rand(1, 100),
+                'play_type' => $playTypes[array_rand($playTypes)], // Use the initialized play types array
+                'ander_harup' => 'ander_harup',
+                'bahar_harup' => 'bahar_harup' . rand(1, 10),
+                'play_game_id' => $playGameId,
+                'entered_number' => $enteredNumber,
                 'entered_amount' => rand(50, 500) . '.' . rand(0, 99),
                 'status' => 'waiting',
                 'created_at' => now(),
@@ -50,7 +48,7 @@ class PlayGamesTableSeeder extends Seeder
             ];
         }
 
-        // Insert the data into the play_games table
-        DB::table('play_games')->insert($playGamesData);
+        // Use the PlayGame model to insert data
+        PlayGame::insert($playGamesData);
     }
 }
