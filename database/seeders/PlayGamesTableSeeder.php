@@ -18,7 +18,7 @@ class PlayGamesTableSeeder extends Seeder
         $playTypes = ['ander_harup', 'bahar_harup']; // Initialize the play types array
         $playGamesData = []; // Initialize array to hold the play games data
 
-        for ($i = 0; $i < 4999; $i++) {
+        for ($i = 0; $i < 49; $i++) {
             // Randomly select a user and a category
             $user = $users->random();
             $category = $categories->random();
