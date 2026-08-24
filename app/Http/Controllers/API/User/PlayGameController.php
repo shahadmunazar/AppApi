@@ -354,55 +354,6 @@ public function number_History()
     }
 }
 
-public function AddMoneyList(Request $request)
-{
-    try {
-        // Get the authenticated user
-        $user = Auth::user();
-        $user_id = $user->id;
-
-        // Fetch all add money requests for the user
-        $requests = \App\Models\AddMoneyRequest::where('user_id', $user_id)
-            ->where('created_at', '>=', \Carbon\Carbon::now()->subDays(7)) // Last 7 days
-            ->orderBy('id', 'DESC')
-            ->get();
-
-        // Prepare the response data
-        $response = $requests->map(function ($req) use ($user) {
-            // Format dates
-            $created_at = \Carbon\Carbon::parse($req->created_at)->format('M d, Y, h:i A');
-            $updated_at = \Carbon\Carbon::parse($req->updated_at)->format('M d, Y, h:i A');
-
-            return [
-                'id' => $req->id,
-                'user_id' => $req->user_id,
-                'transaction_type' => 'credit',
-                'amount' => $req->amount,
-                'description' => 'Add money request',
-                'image' => $req->image,
-                'transaction_date' => $created_at,
-                'available_balance' => $user->balance,
-                'created_at' => $created_at,
-                'updated_at' => $updated_at,
-                'confirm_payment' => $req->status === 'pending' ? 'not_confirm' : ($req->status === 'approved' ? 'received_successfully' : 'rejected'),
-            ];
-        });
-
-        // Return success response with data
-        return response()->json([
-            'status' => 200,
-            'data' => $response,
-            'message' => 'All credit transactions retrieved successfully.'
-        ], 200);
-    } catch (\Throwable $th) {
-        \Log::error('AddMoneyList Error: ' . $th->getMessage());
-        return response()->json([
-            'status' => 500,
-            'message' => 'Failed to retrieve transactions.',
-            'error' => $th->getMessage()
-        ], 500);
-    }
-}
 
 
 //function for add money
@@ -972,6 +923,7 @@ public function AddMoneyList(Request $request)
             'message' => 'All credit transactions retrieved successfully.'
         ], 200);
     } catch (\Throwable $th) {
+        \Log::error('AddMoneyList Error: ' . $th->getMessage());
         // Handle any unexpected errors
         return response()->json([
             'status' => 500,
