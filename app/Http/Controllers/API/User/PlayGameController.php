@@ -383,6 +383,7 @@ public function number_History()
         // Check for existing transaction
         $existingTransaction = Transaction::where('user_id', $user_id)
     ->where('confirm_payment', '=', 'not_confirm')
+    ->where('transaction_type', '=', 'credit')
     ->first();
 
 
@@ -403,16 +404,13 @@ public function number_History()
             $image->storeAs('public/uploads', $imageName); // Store image in the public/uploads directory
         }
 
-        // Create a new transaction
-        $transaction = new Transaction();
-        $transaction->user_id = $user_id;
-        $transaction->transaction_type = 'credit';
-        $transaction->amount = $amount;
-        $transaction->description = 'Added money to balance';
-        $transaction->available_balance = $user->balance + $amount;
-        $transaction->confirm_payment = 'not_confirm';
-        $transaction->image = $imageName; // Save the image name
-        $transaction->save();
+        // Create a new add money request
+        $addMoneyRequest = new \App\Models\AddMoneyRequest();
+        $addMoneyRequest->user_id = $user_id;
+        $addMoneyRequest->amount = $amount;
+        $addMoneyRequest->image = $imageName;
+        $addMoneyRequest->status = 'pending';
+        $addMoneyRequest->save();
 
         DB::commit();
 
@@ -590,8 +588,7 @@ $user->save();
         $searchTerm = $request->input('search');
 
         // Build the query
-        $query = Transaction::with(['user:id,name,mobile']) // Include only 'id', 'name', 'mobile' from the related user
-            ->where('transaction_type', 'credit')
+        $query = \App\Models\AddMoneyRequest::with(['user:id,name,mobile']) // Include only 'id', 'name', 'mobile' from the related user
             ->orderBy('id', 'DESC');
 
         if ($searchTerm) {
@@ -603,13 +600,28 @@ $user->save();
             });
         }
 
-        // Fetch the transactions
-        $all_transaction_added = $query->get();
+        // Fetch the requests
+        $all_requests = $query->get();
+        
+        // Map to match the expected format for Admin panel
+        $mapped_requests = $all_requests->map(function ($req) {
+            return [
+                'id' => $req->id,
+                'user_id' => $req->user_id,
+                'amount' => $req->amount,
+                'image' => $req->image,
+                'confirm_payment' => $req->status === 'pending' ? 'not_confirm' : ($req->status === 'approved' ? 'received_successfully' : 'rejected'),
+                'transaction_type' => 'credit',
+                'description' => 'Add money request',
+                'created_at' => $req->created_at,
+                'user' => $req->user,
+            ];
+        });
 
-        // Return response with transaction data
+        // Return response with data
         return response()->json([
             'status' => 200,
-            'data' => $all_transaction_added
+            'data' => $mapped_requests
         ]);
     } catch (\Throwable $th) {
         return response()->json([
@@ -629,10 +641,10 @@ $user->save();
 
         // If the status is 'not_confirm', update the description and return a response
         if ($confirm_payment_status === 'not_confirm') {
-            $transaction = Transaction::where('transaction_type', 'credit')->find($payment_id);
-            if ($transaction) {
-                $transaction->description = 'Payment is not approved by admin';
-                $transaction->save();
+            $addMoneyRequest = \App\Models\AddMoneyRequest::find($payment_id);
+            if ($addMoneyRequest) {
+                $addMoneyRequest->status = 'rejected';
+                $addMoneyRequest->save();
             }
 
             return response()->json([
@@ -642,22 +654,22 @@ $user->save();
         }
 
         // Proceed with payment confirmation if status is not 'not_confirm'
-        $transaction = Transaction::where('transaction_type', 'credit')->find($payment_id);
-        if (!$transaction) {
+        $addMoneyRequest = \App\Models\AddMoneyRequest::find($payment_id);
+        if (!$addMoneyRequest) {
             return response()->json([
                 'status' => 403,
                 'message' => 'Transaction not found.',
             ], 403);
         }
 
-        if ($transaction->confirm_payment === "received_successfully") {
+        if ($addMoneyRequest->status === "approved") {
             return response()->json([
                 'status' => 403,
                 'message' => 'Payment Already Confirmed',
             ], 403);
         }
 
-        $user_id = $transaction->user_id;
+        $user_id = $addMoneyRequest->user_id;
         $user = User::find($user_id);
         if (!$user) {
             return response()->json([
@@ -670,7 +682,7 @@ $user->save();
         if ($referrer_id) {
             $referrer = User::find($referrer_id);
             if ($referrer) {
-                $bonusAmount = $transaction->amount * 0.05;
+                $bonusAmount = $addMoneyRequest->amount * 0.05;
                 $referrer->balance += $bonusAmount;
                 $referrer->save();
 
@@ -686,16 +698,27 @@ $user->save();
             }
         }
 
-        // Update the transaction and user balance
+        // Update the request status
+        $addMoneyRequest->status = 'approved';
+        $addMoneyRequest->save();
+
+        // Create the actual transaction
+        $transaction = new Transaction();
+        $transaction->user_id = $user->id;
+        $transaction->transaction_type = 'credit';
+        $transaction->amount = $addMoneyRequest->amount;
+        $transaction->description = 'Added money to balance';
         $transaction->confirm_payment = 'received_successfully';
+        $transaction->image = $addMoneyRequest->image;
+        $transaction->available_balance = $user->balance + $addMoneyRequest->amount;
         $transaction->save();
 
-        $user->balance += $transaction->amount;
+        $user->balance += $addMoneyRequest->amount;
         $user->save();
 
         return response()->json([
             'message' => 'Payment status updated successfully.',
-            'transaction' => $transaction
+            'transaction' => $addMoneyRequest
         ], 200);
 
     } catch (\Throwable $th) {
@@ -868,33 +891,30 @@ public function AddMoneyList(Request $request)
         $user = Auth::user();
         $user_id = $user->id;
 
-        // Fetch all credit transactions for the user where payment is confirmed
-        $transactions = Transaction::where('user_id', $user_id)
-            ->where('transaction_type', 'credit') // Ensure 'credit' is a string
-            ->where('confirm_payment', '=', 'not_confirm')
-                ->where('created_at', '>=', Carbon::now()->subDays(7)) // Last 7 days
+        // Fetch all add money requests for the user
+        $requests = \App\Models\AddMoneyRequest::where('user_id', $user_id)
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subDays(7)) // Last 7 days
             ->orderBy('id', 'DESC')
             ->get();
 
         // Prepare the response data
-        $response = $transactions->map(function ($transaction) {
+        $response = $requests->map(function ($req) use ($user) {
             // Format dates
-            $transaction_date = Carbon::parse($transaction->transaction_date)->format('M d, Y, h:i A');
-            $created_at = Carbon::parse($transaction->created_at)->format('M d, Y, h:i A');
-            $updated_at = Carbon::parse($transaction->updated_at)->format('M d, Y, h:i A');
+            $created_at = \Carbon\Carbon::parse($req->created_at)->format('M d, Y, h:i A');
+            $updated_at = \Carbon\Carbon::parse($req->updated_at)->format('M d, Y, h:i A');
 
             return [
-                'id' => $transaction->id,
-                'user_id' => $transaction->user_id,
-                'transaction_type' => $transaction->transaction_type,
-                'amount' => $transaction->amount,
-                'description' => $transaction->description,
-                'image' => $transaction->image,
-                'transaction_date' => $transaction_date,
-                'available_balance' => $transaction->available_balance,
+                'id' => $req->id,
+                'user_id' => $req->user_id,
+                'transaction_type' => 'credit',
+                'amount' => $req->amount,
+                'description' => 'Add money request',
+                'image' => $req->image,
+                'transaction_date' => $created_at,
+                'available_balance' => $user->balance,
                 'created_at' => $created_at,
                 'updated_at' => $updated_at,
-                'confirm_payment' => $transaction->confirm_payment,
+                'confirm_payment' => $req->status === 'pending' ? 'not_confirm' : ($req->status === 'approved' ? 'received_successfully' : 'rejected'),
             ];
         });
 
