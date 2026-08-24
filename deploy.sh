@@ -7,7 +7,7 @@ cd /home/u492713652/domains/sattalives.com/public_html/liveapi
 echo "Starting deployment..."
 
 git fetch origin
-git reset --hard origin/main
+git reset --hard origin/ShahadAppApi
 
 composer install --no-dev --optimize-autoloader
 
