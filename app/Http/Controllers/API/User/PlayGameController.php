@@ -95,7 +95,7 @@ class PlayGameController extends Controller
 
             return response()->json(['message' => 'Game played successfully'], 200);
         } catch (\Throwable $th) {
-            dd($th);
+            Log::error($th->getMessage());
             // Handle any unexpected errors
             return response()->json(['error' => 'An error occurred'], 500);
         }
@@ -273,6 +273,7 @@ public function HarupPlayGame(Request $request){
         return response()->json(['status' => 200, 'message' => 'Game played successfully and balance updated'], 200);
 
     } catch (\Throwable $th) {
+        Log::error($th->getMessage());
         return response()->json(['error' => 'An error occurred'], 500);
     }
     
@@ -343,8 +344,6 @@ public function number_History()
             ]
         ]);
     } catch (\Exception $e) {
-        dd($e);
-        // Log the error
         Log::error('Error in number_History method: ' . $e->getMessage());
 
         // Return the error as a JSON response
@@ -355,7 +354,55 @@ public function number_History()
     }
 }
 
+public function AddMoneyList(Request $request)
+{
+    try {
+        // Get the authenticated user
+        $user = Auth::user();
+        $user_id = $user->id;
 
+        // Fetch all add money requests for the user
+        $requests = \App\Models\AddMoneyRequest::where('user_id', $user_id)
+            ->where('created_at', '>=', \Carbon\Carbon::now()->subDays(7)) // Last 7 days
+            ->orderBy('id', 'DESC')
+            ->get();
+
+        // Prepare the response data
+        $response = $requests->map(function ($req) use ($user) {
+            // Format dates
+            $created_at = \Carbon\Carbon::parse($req->created_at)->format('M d, Y, h:i A');
+            $updated_at = \Carbon\Carbon::parse($req->updated_at)->format('M d, Y, h:i A');
+
+            return [
+                'id' => $req->id,
+                'user_id' => $req->user_id,
+                'transaction_type' => 'credit',
+                'amount' => $req->amount,
+                'description' => 'Add money request',
+                'image' => $req->image,
+                'transaction_date' => $created_at,
+                'available_balance' => $user->balance,
+                'created_at' => $created_at,
+                'updated_at' => $updated_at,
+                'confirm_payment' => $req->status === 'pending' ? 'not_confirm' : ($req->status === 'approved' ? 'received_successfully' : 'rejected'),
+            ];
+        });
+
+        // Return success response with data
+        return response()->json([
+            'status' => 200,
+            'data' => $response,
+            'message' => 'All credit transactions retrieved successfully.'
+        ], 200);
+    } catch (\Throwable $th) {
+        \Log::error('AddMoneyList Error: ' . $th->getMessage());
+        return response()->json([
+            'status' => 500,
+            'message' => 'Failed to retrieve transactions.',
+            'error' => $th->getMessage()
+        ], 500);
+    }
+}
 
 
 //function for add money
@@ -416,8 +463,8 @@ public function number_History()
 
         return response()->json(['status' => 'success', 'message' => 'Amount added to user balance'], 200);
     } catch (\Throwable $th) {
-        dd($th);
-        DB::rollBack();
+        DB::rollback();
+        \Log::error('Add_money Error: ' . $th->getMessage());
         return response()->json(['status' => 'error', 'message' => 'Failed to add amount. Please try again later.'], 500);
     }
 }
