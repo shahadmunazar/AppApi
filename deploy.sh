@@ -9,6 +9,7 @@ echo "Starting deployment..."
 git fetch origin
 git reset --hard origin/ShahadAppApi
 
+export COMPOSER_HOME=/tmp
 composer install --no-dev --optimize-autoloader
 
 php artisan config:clear
