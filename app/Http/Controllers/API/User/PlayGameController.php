@@ -399,7 +399,7 @@ public function number_History()
         $imageName = null;
         if ($image) {
             $imageName = time() . '_' . $image->getClientOriginalName(); // Create a unique name for the image
-            $image->storeAs('public/uploads', $imageName); // Store image in the public/uploads directory
+            $image->move(public_path('uploads'), $imageName); // Store image in the public/uploads directory
         }
 
         // Create a new add money request
