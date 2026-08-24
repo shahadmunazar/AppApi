@@ -379,10 +379,9 @@ public function number_History()
         $user_id = $user->id;
 
         // Check for existing transaction
-        $existingTransaction = Transaction::where('user_id', $user_id)
-    ->where('confirm_payment', '=', 'not_confirm')
-    ->where('transaction_type', '=', 'credit')
-    ->first();
+        $existingTransaction = \App\Models\AddMoneyRequest::where('user_id', $user_id)
+            ->where('status', '=', 'pending')
+            ->first();
 
 
         if ($existingTransaction) {
