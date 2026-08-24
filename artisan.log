@@ -1,0 +1,531 @@
+
+   INFO  Running scheduled tasks every minute.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:06:00 Running ['artisan' whats:message] ......... 2,528ms FAIL
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:09:00 Running ['artisan' whats:message] ......... 2,615ms FAIL
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:12:00 Running ['artisan' whats:message] ......... 2,553ms FAIL
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:15:00 Running ['artisan' whats:message]    INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:18:00 Running ['artisan' whats:message] ....... 182,623ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:21:00 Running ['artisan' whats:message] ....... 182,854ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:24:00 Running ['artisan' whats:message] ....... 182,802ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:27:00 Running ['artisan' whats:message] ....... 182,309ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:30:00 Running ['artisan' whats:message] ....... 182,873ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:33:00 Running ['artisan' whats:message] ....... 182,116ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:36:00 Running ['artisan' whats:message] ....... 183,158ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:39:00 Running ['artisan' whats:message] ....... 182,836ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:42:00 Running ['artisan' whats:message] ....... 182,206ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:45:00 Running ['artisan' whats:message] ....... 183,647ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:48:00 Running ['artisan' whats:message] ....... 182,961ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:51:00 Running ['artisan' whats:message] ....... 182,864ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:54:00 Running ['artisan' whats:message] ....... 182,293ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:57:00 Running ['artisan' whats:message] ....... 182,402ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 01:00:00 Running ['artisan' whats:message] ....... 182,764ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 01:03:00 Running ['artisan' whats:message] ....... 182,861ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+
+   INFO  Running scheduled tasks every minute.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 23:12:00 Running ['artisan' whats:message]    INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 23:15:00 Running ['artisan' whats:message] ....... 182,985ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+
+   INFO  Running scheduled tasks every minute.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 16:35:00 Running ['artisan' whats:messagetwo]   2024-11-08 16:36:00 Running ['artisan' whats:messageone]    INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 182,966ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 16:39:00 Running ['artisan' whats:messagethree] .... 181,894ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 16:39:02 Running ['artisan' whats:messagethree]   2024-11-08 16:40:00 Running ['artisan' whats:message]    INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 16:42:00 Running ['artisan' whats:messagethree] .. 181,879ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 181,869ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+....... 181,897ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 16:43:02 Running ['artisan' whats:messageone]   2024-11-08 16:44:00 Running ['artisan' whats:messageone]   2024-11-08 16:45:00 Running ['artisan' whats:messagetwo] .. 181,870ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,853ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 16:46:04 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+.... 181,903ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 16:48:00 Running ['artisan' whats:messageone] .... 181,841ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+  2024-11-08 16:48:02 Running ['artisan' whats:messagethree]    INFO  No scheduled commands are ready to run.  
+
+.... 181,795ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 16:50:00 Running ['artisan' whats:message]   2024-11-08 16:51:00 Running ['artisan' whats:messagethree] .... 181,845ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 16:51:02 Running ['artisan' whats:messagethree] .. 181,857ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+  2024-11-08 16:52:00 Running ['artisan' whats:messageone]    INFO  No scheduled commands are ready to run.  
+
+....... 181,836ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 16:53:02 Running ['artisan' whats:messagetwo]   2024-11-08 16:54:00 Running ['artisan' whats:messagethree] .. 181,880ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 181,881ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+  2024-11-08 16:55:00 Running ['artisan' whats:messagetwo] .... 181,823ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 16:56:00 Running ['artisan' whats:messageone] .... 181,845ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 16:57:00 Running ['artisan' whats:messagethree] .. 181,829ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,615ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,858ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 17:00:00 Running ['artisan' whats:message] .. 181,861ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 17:03:00 Running ['artisan' whats:messagethree] ....... 181,886ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 17:03:02 Running ['artisan' whats:messageone]   2024-11-08 17:04:00 Running ['artisan' whats:messageone]   2024-11-08 17:05:00 Running ['artisan' whats:messagetwo]   2024-11-08 17:06:00 Running ['artisan' whats:messagethree] .. 181,852ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.... 181,831ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 17:06:03 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+.... 181,892ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 17:08:00 Running ['artisan' whats:messageone] .... 181,823ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 17:09:00 Running ['artisan' whats:messagethree] .. 181,829ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.... 181,893ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+  2024-11-08 17:09:05 Running ['artisan' whats:messagethree]   2024-11-08 17:10:00 Running ['artisan' whats:message]    INFO  No scheduled commands are ready to run.  
+
+.... 181,853ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 17:12:00 Running ['artisan' whats:messageone] .. 181,840ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 181,872ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+....... 181,857ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 17:13:02 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 17:15:00 Running ['artisan' whats:messagetwo] .... 181,832ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 17:15:02 Running ['artisan' whats:messagethree]   2024-11-08 17:16:00 Running ['artisan' whats:messageone] .... 181,859ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 17:18:00 Running ['artisan' whats:messagethree] .... 181,889ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+  2024-11-08 17:18:02 Running ['artisan' whats:messagethree] .. 181,865ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,838ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 17:20:00 Running ['artisan' whats:message]   2024-11-08 17:21:00 Running ['artisan' whats:messagethree] .. 181,855ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 181,918ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+....... 181,866ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 17:23:02 Running ['artisan' whats:messageone]   2024-11-08 17:24:00 Running ['artisan' whats:messageone] .. 181,863ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+  2024-11-08 17:25:00 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+.... 181,868ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 17:26:04 Running ['artisan' whats:messagetwo]   2024-11-08 17:27:00 Running ['artisan' whats:messagethree] .... 181,856ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 17:27:02 Running ['artisan' whats:messagethree]   2024-11-08 17:28:00 Running ['artisan' whats:messageone] .... 181,875ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,839ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 17:30:00 Running ['artisan' whats:message] .. 181,897ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 181,914ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,946ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 17:32:00 Running ['artisan' whats:messageone]   2024-11-08 17:33:00 Running ['artisan' whats:messagethree] ....... 181,861ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 17:33:02 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+
+   INFO  Running scheduled tasks every minute.  
+
+  2024-11-08 18:00:00 Running ['artisan' whats:message]    INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 18:03:00 Running ['artisan' whats:messagethree] ....... 183,344ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 18:03:03 Running ['artisan' whats:messageone]   2024-11-08 18:04:00 Running ['artisan' whats:messageone]   2024-11-08 18:05:00 Running ['artisan' whats:messagetwo]   2024-11-08 18:06:00 Running ['artisan' whats:messagethree] .. 181,882ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.... 181,843ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 18:06:05 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+.... 181,905ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 18:08:00 Running ['artisan' whats:messageone] .... 184,556ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 18:09:00 Running ['artisan' whats:messagethree] .. 181,844ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.... 181,799ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+  2024-11-08 18:09:07 Running ['artisan' whats:messagethree]   2024-11-08 18:10:00 Running ['artisan' whats:message]    INFO  No scheduled commands are ready to run.  
+
+.... 181,875ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 18:12:00 Running ['artisan' whats:messageone] .. 183,046ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 184,553ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+....... 181,900ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 18:13:02 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 18:15:00 Running ['artisan' whats:messagetwo] .... 181,907ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 18:15:02 Running ['artisan' whats:messagethree]   2024-11-08 18:16:00 Running ['artisan' whats:messageone] .... 181,823ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 18:18:00 Running ['artisan' whats:messagethree] .... 181,878ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+  2024-11-08 18:18:02 Running ['artisan' whats:messagethree] .. 181,866ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,867ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 18:20:00 Running ['artisan' whats:message]   2024-11-08 18:21:00 Running ['artisan' whats:messagethree] .. 181,874ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 181,873ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+....... 181,847ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 18:23:02 Running ['artisan' whats:messageone]   2024-11-08 18:24:00 Running ['artisan' whats:messageone] .. 181,827ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+  2024-11-08 18:25:00 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+.... 181,824ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 18:26:03 Running ['artisan' whats:messagetwo]   2024-11-08 18:27:00 Running ['artisan' whats:messagethree] .... 181,909ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 18:27:02 Running ['artisan' whats:messagethree]   2024-11-08 18:28:00 Running ['artisan' whats:messageone] .... 181,905ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,811ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 18:30:00 Running ['artisan' whats:message] .. 181,851ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 181,920ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,843ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 18:32:00 Running ['artisan' whats:messageone]   2024-11-08 18:33:00 Running ['artisan' whats:messagethree] ....... 181,850ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 18:33:02 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 18:35:00 Running ['artisan' whats:messagetwo] .... 181,844ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 18:36:00 Running ['artisan' whats:messageone] .. 181,841ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.... 181,858ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+  2024-11-08 18:36:03 Running ['artisan' whats:messagethree]    INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,880ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 18:39:00 Running ['artisan' whats:messagethree] .... 181,811ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 18:39:02 Running ['artisan' whats:messagethree] .. 181,828ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+  2024-11-08 18:40:00 Running ['artisan' whats:message]    INFO  No scheduled commands are ready to run.  
+
+  2024-11-08 18:42:00 Running ['artisan' whats:messagethree] .. 181,832ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 181,899ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+....... 181,877ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 18:43:02 Running ['artisan' whats:messageone]   2024-11-08 18:44:00 Running ['artisan' whats:messageone]   2024-11-08 18:45:00 Running ['artisan' whats:messagetwo] .. 181,852ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 182,570ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 18:46:04 Running ['artisan' whats:messagetwo]    INFO  No scheduled commands are ready to run.  
+
+.... 181,839ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 18:48:00 Running ['artisan' whats:messageone] .... 181,864ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+  2024-11-08 18:48:02 Running ['artisan' whats:messagethree]    INFO  No scheduled commands are ready to run.  
+
+.... 181,799ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 18:50:00 Running ['artisan' whats:message]   2024-11-08 18:51:00 Running ['artisan' whats:messagethree] .... 181,856ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+  2024-11-08 18:51:02 Running ['artisan' whats:messagethree] .. 181,867ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+  2024-11-08 18:52:00 Running ['artisan' whats:messageone]    INFO  No scheduled commands are ready to run.  
+
+....... 181,840ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+  2024-11-08 18:53:02 Running ['artisan' whats:messagetwo]   2024-11-08 18:54:00 Running ['artisan' whats:messagethree] .. 181,774ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+.. 181,895ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+  2024-11-08 18:55:00 Running ['artisan' whats:messagetwo] .... 181,901ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 18:56:00 Running ['artisan' whats:messageone] .... 181,912ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+  2024-11-08 18:57:00 Running ['artisan' whats:messagethree] .. 181,828ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,916ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagetwo > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+.... 181,855ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messageone > '/dev/null' 2>&1  
+
+  2024-11-08 19:00:00 Running ['artisan' whats:message] .. 181,817ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:messagethree > '/dev/null' 2>&1  
+

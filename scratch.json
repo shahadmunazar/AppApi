@@ -1,0 +1,311 @@
+<br />
+<b>Deprecated</b>:  Return type of Carbon\Carbon::createFromTimestamp($timestamp, $tz = null) should either be compatible with DateTime::createFromTimestamp(int|float $timestamp): static, or the #[\ReturnTypeWillChange] attribute should be used to temporarily suppress the notice in <b>/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/nesbot/carbon/src/Carbon/Traits/Timestamp.php</b> on line <b>29</b><br />
+<br />
+<b>Deprecated</b>:  Constant PDO::MYSQL_ATTR_SSL_CA is deprecated since 8.5, use Pdo\Mysql::ATTR_SSL_CA instead in <b>/Applications/XAMPP/xamppfiles/htdocs/sattalives/config/database.php</b> on line <b>62</b><br />
+{
+    "message": "Class \"App\\Http\\Controllers\\Log\" not found",
+    "exception": "Error",
+    "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/app/Http/Controllers/RegisterControllerRefferal.php",
+    "line": 579,
+    "trace": [
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Controller.php",
+            "line": 54,
+            "function": "all_frontend_numbers",
+            "class": "App\\Http\\Controllers\\RegisterControllerRefferal",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php",
+            "line": 43,
+            "function": "callAction",
+            "class": "Illuminate\\Routing\\Controller",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
+            "line": 259,
+            "function": "dispatch",
+            "class": "Illuminate\\Routing\\ControllerDispatcher",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Route.php",
+            "line": 205,
+            "function": "runController",
+            "class": "Illuminate\\Routing\\Route",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
+            "line": 798,
+            "function": "run",
+            "class": "Illuminate\\Routing\\Route",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 141,
+            "function": "{closure:Illuminate\\Routing\\Router::runRouteWithinStack():797}",
+            "class": "Illuminate\\Routing\\Router",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php",
+            "line": 50,
+            "function": "{closure:Illuminate\\Pipeline\\Pipeline::prepareDestination():139}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 180,
+            "function": "handle",
+            "class": "Illuminate\\Routing\\Middleware\\SubstituteBindings",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
+            "line": 126,
+            "function": "{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():155}:156}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
+            "line": 92,
+            "function": "handleRequest",
+            "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php",
+            "line": 54,
+            "function": "handleRequestUsingNamedLimiter",
+            "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 180,
+            "function": "handle",
+            "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php",
+            "line": 25,
+            "function": "{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():155}:156}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 141,
+            "function": "{closure:Laravel\\Sanctum\\Http\\Middleware\\EnsureFrontendRequestsAreStateful::handle():24}",
+            "class": "Laravel\\Sanctum\\Http\\Middleware\\EnsureFrontendRequestsAreStateful",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 116,
+            "function": "{closure:Illuminate\\Pipeline\\Pipeline::prepareDestination():139}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php",
+            "line": 24,
+            "function": "then",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 180,
+            "function": "handle",
+            "class": "Laravel\\Sanctum\\Http\\Middleware\\EnsureFrontendRequestsAreStateful",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 116,
+            "function": "{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():155}:156}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
+            "line": 797,
+            "function": "then",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
+            "line": 776,
+            "function": "runRouteWithinStack",
+            "class": "Illuminate\\Routing\\Router",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
+            "line": 740,
+            "function": "runRoute",
+            "class": "Illuminate\\Routing\\Router",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Routing/Router.php",
+            "line": 729,
+            "function": "dispatchToRoute",
+            "class": "Illuminate\\Routing\\Router",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
+            "line": 190,
+            "function": "dispatch",
+            "class": "Illuminate\\Routing\\Router",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 141,
+            "function": "{closure:Illuminate\\Foundation\\Http\\Kernel::dispatchToRouter():187}",
+            "class": "Illuminate\\Foundation\\Http\\Kernel",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php",
+            "line": 21,
+            "function": "{closure:Illuminate\\Pipeline\\Pipeline::prepareDestination():139}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php",
+            "line": 31,
+            "function": "handle",
+            "class": "Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 180,
+            "function": "handle",
+            "class": "Illuminate\\Foundation\\Http\\Middleware\\ConvertEmptyStringsToNull",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php",
+            "line": 21,
+            "function": "{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():155}:156}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php",
+            "line": 40,
+            "function": "handle",
+            "class": "Illuminate\\Foundation\\Http\\Middleware\\TransformsRequest",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 180,
+            "function": "handle",
+            "class": "Illuminate\\Foundation\\Http\\Middleware\\TrimStrings",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php",
+            "line": 27,
+            "function": "{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():155}:156}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 180,
+            "function": "handle",
+            "class": "Illuminate\\Foundation\\Http\\Middleware\\ValidatePostSize",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php",
+            "line": 86,
+            "function": "{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():155}:156}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 180,
+            "function": "handle",
+            "class": "Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/fruitcake/laravel-cors/src/HandleCors.php",
+            "line": 52,
+            "function": "{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():155}:156}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 180,
+            "function": "handle",
+            "class": "Fruitcake\\Cors\\HandleCors",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php",
+            "line": 39,
+            "function": "{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():155}:156}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 180,
+            "function": "handle",
+            "class": "Illuminate\\Http\\Middleware\\TrustProxies",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php",
+            "line": 116,
+            "function": "{closure:{closure:Illuminate\\Pipeline\\Pipeline::carry():155}:156}",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
+            "line": 165,
+            "function": "then",
+            "class": "Illuminate\\Pipeline\\Pipeline",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php",
+            "line": 134,
+            "function": "sendRequestThroughRouter",
+            "class": "Illuminate\\Foundation\\Http\\Kernel",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/public/index.php",
+            "line": 51,
+            "function": "handle",
+            "class": "Illuminate\\Foundation\\Http\\Kernel",
+            "type": "->"
+        },
+        {
+            "file": "/Applications/XAMPP/xamppfiles/htdocs/sattalives/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php",
+            "line": 16,
+            "function": "require_once"
+        }
+    ]
+}

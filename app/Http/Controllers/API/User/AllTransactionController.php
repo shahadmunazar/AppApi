@@ -19,7 +19,9 @@ class AllTransactionController extends Controller
                 return response()->json(['status' => 'error', 'message' => 'User not found'], 404);
             }
             $user_id = $user->id;
-            $allTransactions = Transaction::where('user_id', $user_id)->get();
+$allTransactions = Transaction::where('user_id', $user_id)
+    ->orderBy('id', 'DESC')
+    ->get();
             return response()->json(['status' => 200, 'data' => $allTransactions, 'message' => 'All Transactions']);
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()], 500);

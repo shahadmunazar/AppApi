@@ -1,0 +1,272 @@
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:06:00 Running ['artisan' whats:message]   2024-11-06 00:06:00 Running ['artisan' whats:message] ......... 2,553ms FAIL
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+......... 2,574ms FAIL
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:09:00 Running ['artisan' whats:message]   2024-11-06 00:09:00 Running ['artisan' whats:message] ......... 2,615ms FAIL
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+......... 2,666ms FAIL
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:12:00 Running ['artisan' whats:message]   2024-11-06 00:12:00 Running ['artisan' whats:message] ......... 2,598ms FAIL
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+......... 2,798ms FAIL
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:15:00 Running ['artisan' whats:message]   2024-11-06 00:15:00 Running ['artisan' whats:message]    INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:18:00 Running ['artisan' whats:message]   2024-11-06 00:18:00 Running ['artisan' whats:message] ....... 182,630ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,663ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:21:00 Running ['artisan' whats:message]   2024-11-06 00:21:00 Running ['artisan' whats:message] ....... 182,791ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,910ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:24:00 Running ['artisan' whats:message]   2024-11-06 00:24:00 Running ['artisan' whats:message] ....... 182,781ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,824ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:27:00 Running ['artisan' whats:message]   2024-11-06 00:27:00 Running ['artisan' whats:message] ....... 182,177ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,417ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:30:00 Running ['artisan' whats:message]   2024-11-06 00:30:00 Running ['artisan' whats:message] ....... 182,787ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,864ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:33:00 Running ['artisan' whats:message]   2024-11-06 00:33:00 Running ['artisan' whats:message] ....... 182,252ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,416ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:36:00 Running ['artisan' whats:message]   2024-11-06 00:36:00 Running ['artisan' whats:message] ....... 182,672ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 183,154ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:39:00 Running ['artisan' whats:message]   2024-11-06 00:39:00 Running ['artisan' whats:message] ....... 182,808ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,867ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:42:00 Running ['artisan' whats:message]   2024-11-06 00:42:00 Running ['artisan' whats:message] ....... 182,415ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,470ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:45:00 Running ['artisan' whats:message]   2024-11-06 00:45:00 Running ['artisan' whats:message] ....... 183,714ms DONE
+....... 183,780ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:48:00 Running ['artisan' whats:message]   2024-11-06 00:48:00 Running ['artisan' whats:message] ....... 182,896ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,918ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:51:00 Running ['artisan' whats:message]   2024-11-06 00:51:00 Running ['artisan' whats:message] ....... 182,877ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,853ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:54:00 Running ['artisan' whats:message]   2024-11-06 00:54:00 Running ['artisan' whats:message] ....... 182,366ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,373ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 00:57:00 Running ['artisan' whats:message]   2024-11-06 00:57:00 Running ['artisan' whats:message] ....... 182,347ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,347ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 01:00:00 Running ['artisan' whats:message]   2024-11-06 01:00:00 Running ['artisan' whats:message] ....... 182,860ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,941ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+   INFO  No scheduled commands are ready to run.  
+
+  2024-11-06 01:03:00 Running ['artisan' whats:message]   2024-11-06 01:03:00 Running ['artisan' whats:message] ....... 182,847ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+....... 182,806ms DONE
+  ⇂ '/opt/alt/php82/usr/bin/php' 'artisan' whats:message > '/dev/null' 2>&1  
+
+   INFO  No scheduled commands are ready to run.  
+

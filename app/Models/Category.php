@@ -13,7 +13,7 @@ class Category extends Model
     protected $table = "categories";
 
     protected $fillable = [
-        'name', 'open_time', 'last_time', 'no_open',
+        'name', 'open_time', 'last_time', 'no_open','active'
     ];
 
     protected $dates = ['deleted_at'];

@@ -13,9 +13,11 @@ class Transaction extends Model
         'user_id',
         'transaction_type',
         'amount',
+        'image',
         'description',
         'transaction_date',
         'available_balance',
+        'confirm_payment'
     ];
 
     protected $casts = [

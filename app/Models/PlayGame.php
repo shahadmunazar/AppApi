@@ -34,5 +34,11 @@ class PlayGame extends Model
     {
         return $this->belongsTo(Category::class, 'category_id');
     }
+    // PlayGame.php
+public function user()
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
+
 
 }
