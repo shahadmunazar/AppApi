@@ -25,7 +25,7 @@ class PlayedGameController extends Controller
     try {
         $date = $request->date;
 
-        $data = PlayGame::whereDate('created_at', $date)
+        $data = PlayGame::whereBetween('created_at', [businessStart($date), businessEnd($date)])
             ->with('category')
             ->select('category_id',
                 \DB::raw('SUM(entered_amount) as total_entered_amount'),
@@ -58,7 +58,7 @@ class PlayedGameController extends Controller
         
         $date = $request->date;
 
-        $totals = Transaction::whereDate('created_at', $date)
+        $totals = Transaction::whereBetween('created_at', [businessStart($date), businessEnd($date)])
             ->whereIn('transaction_type', ['withdrawal', 'credit'])
             ->selectRaw("
                 SUM(CASE WHEN transaction_type = 'withdrawal' THEN amount ELSE 0 END) as total_debit,
@@ -418,7 +418,7 @@ public function User_Playing_Game(Request $request, $user_id)
 
             // Revoke the TodayResult entry
             $todayResult = \App\Models\TodayResult::where('category_id', $categoryId)
-                ->whereDate('created_at', Carbon::today())
+                ->whereDate('created_at', businessDate())
                 ->first();
 
             if ($todayResult) {
@@ -428,7 +428,7 @@ public function User_Playing_Game(Request $request, $user_id)
 
             // Revert played games
             $playedGames = PlayGame::where('category_id', $categoryId)
-                ->whereDate('updated_at', Carbon::today())
+                ->whereBetween('updated_at', [businessStart(), businessEnd()])
                 ->whereIn('status', ['won', 'lost'])
                 ->get();
 
@@ -520,7 +520,7 @@ public function User_Playing_Game(Request $request, $user_id)
 
                 $checkAlreadyOpenResults = TodayResult::where('category_id', $id)
                     ->where('category_name', $category_to_update->name) // Assuming category_name is the name of the category
-                    ->whereDate('created_at', Carbon::today()) // Only check the date part
+                    ->whereDate('created_at', businessDate()) // Only check the date part
                     ->first();
 
                 if ($checkAlreadyOpenResults) {
@@ -632,50 +632,50 @@ public function User_Playing_Game(Request $request, $user_id)
 public function AdminDashboard(Request $request)
 {
     try {
-        $today = Carbon::today();
+        $today = businessDate();
 
         // Today Request Money
         $today_request_money = Transaction::where('transaction_type', 'withdrawal')
-            ->whereDate('created_at', $today)
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->sum('amount');
         $today_transaction_count = Transaction::where('transaction_type', 'withdrawal')
-            ->whereDate('created_at', $today)
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->count();
 
         // Today Add Money
         $today_credit_money = Transaction::where('transaction_type', 'credit')
-            ->whereDate('created_at', $today)
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->sum('amount');
         $today_count_credit_transaction = Transaction::where('transaction_type', 'credit')
-            ->whereDate('created_at', $today)
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->count();
 
         // Today Total Loss
         $today_total_loss_amount = Transaction::whereIn('transaction_type', ['loss', 'debit'])
-            ->whereDate('created_at', $today)
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->sum('amount');
         $today_total_loss_count = Transaction::whereIn('transaction_type', ['loss', 'debit'])
-            ->whereDate('created_at', $today)
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->count();
 
         // Users
         $total_user = User::where('role', 'user')->count();
         $total_user_today = User::where('role', 'user')
-            ->whereDate('created_at', $today)
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->count();
 
         // Today Play Games
-        $play_today_game = PlayGame::whereDate('created_at', $today)->sum('entered_amount');
-        $play_today_count = PlayGame::whereDate('created_at', $today)->count();
+        $play_today_game = PlayGame::whereBetween('created_at', [businessStart(), businessEnd()])->sum('entered_amount');
+        $play_today_count = PlayGame::whereBetween('created_at', [businessStart(), businessEnd()])->count();
 
         // Bonus Today
         $total_bonus_amount = Transaction::where('transaction_type', 'bonus')
             ->where('confirm_payment', '!=', 'not_confirm')
-            ->whereDate('created_at', $today)
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->sum('amount');
         $total_bonus_count = Transaction::where('transaction_type', 'bonus')
             ->where('confirm_payment', '!=', 'not_confirm')
-            ->whereDate('created_at', $today)
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->count();
 
         // Total Transactions

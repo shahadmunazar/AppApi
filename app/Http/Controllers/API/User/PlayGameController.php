@@ -294,8 +294,8 @@ public function number_History()
         $result = [];
 
         // Fetch today's date and yesterday's date in Y-m-d format
-        $today = Carbon::today()->format('Y-m-d');
-        $yesterday = Carbon::yesterday()->format('Y-m-d');
+        $today = businessDate();
+        $yesterday = \Carbon\Carbon::parse(businessDate())->subDay()->toDateString();
 
         // Loop through each category to fetch the relevant data
         foreach ($categories as $category) {
@@ -736,7 +736,7 @@ public function AllTransaction(Request $request)
 
         // Fetch all transactions for the user where payment is confirmed
         $all_transaction = Transaction::where('user_id', $user_id)
-    ->where('created_at', '>=', Carbon::now()->subDays(7)) // Last 7 days
+    ->whereBetween('created_at', [\Carbon\Carbon::parse(businessDate())->subDays(7)->format('Y-m-d') . ' 03:21:00', businessEnd()]) // Last 7 days
     ->orderBy('id', 'DESC')
     ->get();
 
@@ -812,7 +812,7 @@ public function AllTransaction(Request $request)
         // Fetch and format the withdrawal money data
         $withdrawal_money = WithdrawalMoney::where('user_id', $user_id)
             ->orderBy('id', 'DESC')
-                ->where('created_at', '>=', Carbon::now()->subDays(7)) // Last 7 days
+                ->whereBetween('created_at', [\Carbon\Carbon::parse(businessDate())->subDays(7)->format('Y-m-d') . ' 03:21:00', businessEnd()]) // Last 7 days
             ->get()
             ->map(function ($item) {
                 return [
@@ -890,7 +890,7 @@ public function AddMoneyList(Request $request)
 
         // Fetch all add money requests for the user
         $requests = \App\Models\AddMoneyRequest::where('user_id', $user_id)
-            ->where('created_at', '>=', \Carbon\Carbon::now()->subDays(7)) // Last 7 days
+            ->whereBetween('created_at', [\Carbon\Carbon::parse(businessDate())->subDays(7)->format('Y-m-d') . ' 03:21:00', businessEnd()]) // Last 7 days
             ->orderBy('id', 'DESC')
             ->get();
 
@@ -944,7 +944,7 @@ public function WonMoneyList(Request $request)
         $wonTransactions = PlayGame::with('category') // Eager load the category relationship
             ->where('user_id', $user_id)
             ->where('status', 'won')
-                ->where('created_at', '>=', Carbon::now()->subDays(7)) // Last 7 days
+                ->whereBetween('created_at', [\Carbon\Carbon::parse(businessDate())->subDays(7)->format('Y-m-d') . ' 03:21:00', businessEnd()]) // Last 7 days
             ->orderBy('id', 'DESC')
             ->get();
 
@@ -994,7 +994,7 @@ public function All_playGame(Request $request)
 
         // Fetch played games for the user
         $played_games = PlayGame::where('user_id', $user_id)
-                ->where('created_at', '>=', Carbon::now()->subDays(7)) // Last 7 days
+                ->whereBetween('created_at', [\Carbon\Carbon::parse(businessDate())->subDays(7)->format('Y-m-d') . ' 03:21:00', businessEnd()]) // Last 7 days
             ->orderBy('id', 'DESC')
             ->get();
 
@@ -1092,8 +1092,8 @@ public function PlayGame_Harup(Request $request) {
         $game_type = $request->game_type;
 
         // Create a datetime for the current day
-        $created_at = Carbon::today('Asia/Kolkata')->addMinutes(200)->format('Y-m-d H:i:s');
-        $startOfDay = Carbon::now('Asia/Kolkata')->startOfDay()->format('Y-m-d H:i:s');
+        $created_at = businessEnd();
+        $startOfDay = businessStart();
 
         // Initialize betting totals and total amount
         $bettingTotals = [];
@@ -1164,8 +1164,8 @@ public function PlayGame_Category(Request $request)
 {
     try {
         $category_id = $request->category_id;
-        $created_at = Carbon::today('Asia/Kolkata')->addMinutes(200)->format('Y-m-d H:i:s');
-        $startOfDay = Carbon::now('Asia/Kolkata')->startOfDay()->format('Y-m-d H:i:s');
+        $created_at = businessEnd();
+        $startOfDay = businessStart();
         
         // Initialize bettingTotals for all numbers 00 to 100
         $bettingTotals = [];
@@ -1177,7 +1177,7 @@ public function PlayGame_Category(Request $request)
         // Fetch play games within the specified date range
         $play_games = PlayGame::where('status', 'waiting')
             ->where('category_id', $category_id)
-            ->whereDate('created_at', [$startOfDay, $created_at]) // Use between condition to fetch records for today with added minutes
+            ->whereBetween('created_at', [$startOfDay, $created_at]) // Use between condition to fetch records for today with added minutes
             ->get();
 
         // Calculate the total betting amounts for each number

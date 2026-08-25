@@ -512,9 +512,8 @@ public function change_password_admin(Request $request)
         // Initialize the result array
         $result = [];
         
-        // Fetch today's date and yesterday's date in Y-m-d format
-        $today = Carbon::today()->format('Y-m-d');
-        $yesterday = Carbon::yesterday()->format('Y-m-d');
+        $today = businessDate();
+        $yesterday = \Carbon\Carbon::parse(businessDate())->subDay()->toDateString();
 
         // Loop through each category to fetch the relevant data
         foreach ($categories as $category) {

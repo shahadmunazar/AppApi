@@ -484,7 +484,7 @@ public function result_today(Request $request)
                 'category_id' => $id,
                 'category_name' => $category->name,
                 'open_time' => $open_time,
-                'created_at' => Carbon::today(), // Ensure it's today's result
+                'created_at' => businessDate(), // Ensure it's today's result
             ],
             [
                 'open_number' => $no_open,
