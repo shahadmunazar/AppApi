@@ -8,6 +8,7 @@ use App\Http\Controllers\API\User\AllTransactionController;
 use App\Http\Controllers\API\User\CategoryControllerUser;
 use App\Http\Controllers\API\User\PlayGameController;
 use App\Http\Controllers\RegisterControllerRefferal;
+use App\Http\Controllers\API\AppSettingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,8 @@ use Illuminate\Support\Facades\Route;
 // Public Routes
 Route::post('signup', [RegisterControllerRefferal::class, 'Signup']);
 Route::post('login', [RegisterControllerRefferal::class, 'login']);
+
+Route::get('app-settings', [AppSettingController::class, 'getSettings']);
 
 Route::post('add-data-number',[RegisterControllerRefferal::class,'AddWhatsAppNumber']);
 
@@ -71,6 +74,10 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'check.user.type:admin'])->g
     Route::post('admin-logout', [RegisterControllerRefferal::class, 'admin_logout']);
     Route::get('admin-get', [AdminController::class, 'getAdmin']);
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
+
+    // App Settings (QR Code, App Version)
+    Route::post('update-qr-code', [AppSettingController::class, 'updateQRCode']);
+    Route::post('update-app-version', [AppSettingController::class, 'updateAppVersion']);
 
     // Category Management
     Route::get('get-all-category-list', [CategoryController::class, 'get_All_Category']);

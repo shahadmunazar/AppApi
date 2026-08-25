@@ -364,7 +364,7 @@ public function number_History()
         // Validate the request data
         $validator = Validator::make($request->all(), [
             'amount' => 'required|integer',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image
+            'image' => 'nullable|image|max:10240', // Validate image (10MB max)
         ]);
 
         if ($validator->fails()) {
@@ -429,7 +429,7 @@ public function number_History()
             'request_money' => 'required|integer|min:500',
             'mobile_no' => 'nullable|integer',
             'upi_id' => 'nullable|string',
-            'qr_code_image' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'qr_code_image' => 'nullable|image|max:10240', // Validate image (10MB max)
         ]);
 
         if ($validator->fails()) {
