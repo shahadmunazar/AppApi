@@ -22,6 +22,7 @@ php artisan migrate --force
 
 php artisan optimize
 
-chmod -R 775 storage bootstrap/cache
+mkdir -p uploads
+chmod -R 775 storage bootstrap/cache uploads
 
 echo "Deployment completed successfully."
