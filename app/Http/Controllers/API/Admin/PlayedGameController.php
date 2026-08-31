@@ -1263,51 +1263,44 @@ public function UserHistoryAllLis(Request $request) {
 
     public function dailyWinLossStats(Request $request) {
         try {
-            $perPage = $request->input('per_page', 10);
-            
-            // Get unique dates from transactions where there are wins or losses
-            $dates = Transaction::whereIn('transaction_type', ['won', 'loss', 'debit'])
-                ->select(\DB::raw('DATE(created_at) as date'))
-                ->groupBy('date')
-                ->orderBy('date', 'desc')
-                ->paginate($perPage);
+            $date = $request->input('date');
 
-            $data = [];
-            foreach ($dates as $d) {
-                $dateStr = $d->date;
-                
-                $total_win = Transaction::where('transaction_type', 'won')
-                    ->whereDate('created_at', $dateStr)
-                    ->sum('amount');
-                    
-                $total_loss = Transaction::whereIn('transaction_type', ['loss', 'debit'])
-                    ->whereDate('created_at', $dateStr)
-                    ->sum('amount');
-                    
-                $top_winner = Transaction::with('user')
-                    ->where('transaction_type', 'won')
-                    ->whereDate('created_at', $dateStr)
-                    ->orderBy('amount', 'desc')
-                    ->first();
-                    
-                $data[] = [
-                    'date' => $dateStr,
-                    'total_win' => round($total_win, 2),
-                    'total_loss' => round($total_loss, 2),
-                    'top_winner_name' => $top_winner && $top_winner->user ? $top_winner->user->name : null,
-                    'top_winner_amount' => $top_winner ? round($top_winner->amount, 2) : 0,
-                ];
+            $winQuery = Transaction::where('transaction_type', 'won');
+            $lossQuery = Transaction::whereIn('transaction_type', ['loss', 'debit']);
+            $betQuery = PlayGame::query();
+
+            if ($date) {
+                $winQuery->whereDate('created_at', $date);
+                $lossQuery->whereDate('created_at', $date);
+                $betQuery->whereDate('created_at', $date);
             }
+
+            $total_users_won = (clone $winQuery)->distinct('user_id')->count('user_id');
+            $total_users_loss = (clone $lossQuery)->distinct('user_id')->count('user_id');
             
+            $total_win_amount = (clone $winQuery)->sum('amount');
+            $total_loss_amount = (clone $lossQuery)->sum('amount');
+            
+            $total_bet_amount = (clone $betQuery)->sum('entered_amount');
+
+            $top_winner = (clone $winQuery)->with('user')
+                ->orderBy('amount', 'desc')
+                ->first();
+
+            $data = [
+                'date' => $date ? $date : 'All Time',
+                'total_users_won' => $total_users_won,
+                'total_users_loss' => $total_users_loss,
+                'total_bet_amount' => round($total_bet_amount, 2),
+                'total_win_amount' => round($total_win_amount, 2),
+                'total_loss_amount' => round($total_loss_amount, 2),
+                'top_winner_name' => $top_winner && $top_winner->user ? $top_winner->user->name : null,
+                'top_winner_amount' => $top_winner ? round($top_winner->amount, 2) : 0,
+            ];
+
             return response()->json([
                 'status' => 200,
-                'data' => $data,
-                'pagination' => [
-                    'current_page' => $dates->currentPage(),
-                    'last_page' => $dates->lastPage(),
-                    'per_page' => $dates->perPage(),
-                    'total' => $dates->total(),
-                ]
+                'data' => $data
             ]);
 
         } catch (\Exception $e) {
