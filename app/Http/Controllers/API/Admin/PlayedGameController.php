@@ -1260,4 +1260,63 @@ public function UserHistoryAllLis(Request $request) {
 
     
     
+
+    public function dailyWinLossStats(Request $request) {
+        try {
+            $perPage = $request->input('per_page', 10);
+            
+            // Get unique dates from transactions where there are wins or losses
+            $dates = Transaction::whereIn('transaction_type', ['won', 'loss', 'debit'])
+                ->select(\DB::raw('DATE(created_at) as date'))
+                ->groupBy('date')
+                ->orderBy('date', 'desc')
+                ->paginate($perPage);
+
+            $data = [];
+            foreach ($dates as $d) {
+                $dateStr = $d->date;
+                
+                $total_win = Transaction::where('transaction_type', 'won')
+                    ->whereDate('created_at', $dateStr)
+                    ->sum('amount');
+                    
+                $total_loss = Transaction::whereIn('transaction_type', ['loss', 'debit'])
+                    ->whereDate('created_at', $dateStr)
+                    ->sum('amount');
+                    
+                $top_winner = Transaction::with('user')
+                    ->where('transaction_type', 'won')
+                    ->whereDate('created_at', $dateStr)
+                    ->orderBy('amount', 'desc')
+                    ->first();
+                    
+                $data[] = [
+                    'date' => $dateStr,
+                    'total_win' => round($total_win, 2),
+                    'total_loss' => round($total_loss, 2),
+                    'top_winner_name' => $top_winner && $top_winner->user ? $top_winner->user->name : null,
+                    'top_winner_amount' => $top_winner ? round($top_winner->amount, 2) : 0,
+                ];
+            }
+            
+            return response()->json([
+                'status' => 200,
+                'data' => $data,
+                'pagination' => [
+                    'current_page' => $dates->currentPage(),
+                    'last_page' => $dates->lastPage(),
+                    'per_page' => $dates->perPage(),
+                    'total' => $dates->total(),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
 }

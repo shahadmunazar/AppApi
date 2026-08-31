@@ -131,6 +131,8 @@ Route::get('play-game-history-user/{user_id}',[PlayedGameController::class, 'Use
 
     Route::put('result_today', [CategoryController::class, 'result_today']);
     Route::get('admin-dashboard', [PlayedGameController::class, 'AdminDashboard']);
+    Route::get('daily-win-loss-stats', [PlayedGameController::class, 'dailyWinLossStats']);
+
     Route::post('approved-payment',[PlayedGameController::class,'Approved']);
     Route::get('all-withdrawal-list', [PlayedGameController::class, 'all_request_money_list']);
     Route::put('update-withdrawal-status/', [PlayedGameController::class, 'update_withdrawal_req']);
