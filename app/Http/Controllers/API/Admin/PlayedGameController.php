@@ -1286,6 +1286,32 @@ public function UserHistoryAllLis(Request $request) {
             $top_winner = (clone $winQuery)->with('user')
                 ->orderBy('amount', 'desc')
                 ->first();
+                
+            $users_query = Transaction::with('user')
+                ->whereIn('transaction_type', ['won', 'loss', 'debit']);
+                
+            if ($date) {
+                $users_query->whereDate('created_at', $date);
+            }
+            
+            $users_stats_raw = $users_query->select('user_id',
+                    \DB::raw("SUM(CASE WHEN transaction_type = 'won' THEN amount ELSE 0 END) as total_won"),
+                    \DB::raw("SUM(CASE WHEN transaction_type IN ('loss', 'debit') THEN amount ELSE 0 END) as total_loss")
+                )
+                ->groupBy('user_id')
+                ->orderBy('total_won', 'desc')
+                ->get();
+                
+            $users_list = [];
+            foreach ($users_stats_raw as $stat) {
+                $users_list[] = [
+                    'user_id' => $stat->user_id,
+                    'user_name' => $stat->user ? $stat->user->name : 'Unknown',
+                    'user_mobile' => $stat->user ? $stat->user->mobile : '-',
+                    'total_won' => round($stat->total_won, 2),
+                    'total_loss' => round($stat->total_loss, 2),
+                ];
+            }
 
             $data = [
                 'date' => $date ? $date : 'All Time',
@@ -1296,6 +1322,7 @@ public function UserHistoryAllLis(Request $request) {
                 'total_loss_amount' => round($total_loss_amount, 2),
                 'top_winner_name' => $top_winner && $top_winner->user ? $top_winner->user->name : null,
                 'top_winner_amount' => $top_winner ? round($top_winner->amount, 2) : 0,
+                'users_list' => $users_list,
             ];
 
             return response()->json([
