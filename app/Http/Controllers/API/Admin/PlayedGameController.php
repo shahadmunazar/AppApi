@@ -642,11 +642,23 @@ public function AdminDashboard(Request $request)
             ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->count();
 
-        // Today Add Money
+        // Today Add Money (Excluding Refunds)
         $today_credit_money = Transaction::where('transaction_type', 'credit')
+            ->where('description', '!=', 'Withdrawal rejected, amount refunded')
             ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->sum('amount');
         $today_count_credit_transaction = Transaction::where('transaction_type', 'credit')
+            ->where('description', '!=', 'Withdrawal rejected, amount refunded')
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
+            ->count();
+            
+        // Today Rejected Withdrawal
+        $today_reject_request_money = Transaction::where('transaction_type', 'credit')
+            ->where('description', 'Withdrawal rejected, amount refunded')
+            ->whereBetween('created_at', [businessStart(), businessEnd()])
+            ->sum('amount');
+        $today_reject_request_count = Transaction::where('transaction_type', 'credit')
+            ->where('description', 'Withdrawal rejected, amount refunded')
             ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->count();
 
@@ -689,6 +701,8 @@ public function AdminDashboard(Request $request)
                 'today_transaction_count' => $today_transaction_count,
                 'today_credit_money' => round($today_credit_money, 2),
                 'today_count_credit_transaction' => $today_count_credit_transaction,
+                'today_reject_request_money' => round($today_reject_request_money, 2),
+                'today_reject_request_count' => $today_reject_request_count,
                 'today_total_loss_amount' => round($today_total_loss_amount, 2),
                 'today_total_loss_count' => $today_total_loss_count,
                 'total_user' => $total_user,
