@@ -653,11 +653,11 @@ public function AdminDashboard(Request $request)
             ->count();
             
         // Today Rejected Withdrawal
-        $today_reject_request_money = Transaction::where('transaction_type', 'credit')
+        $today_reject_request_money = Transaction::whereIn('transaction_type', ['credit', 'refund', 'rejected'])
             ->where('description', 'Withdrawal rejected, amount refunded')
             ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->sum('amount');
-        $today_reject_request_count = Transaction::where('transaction_type', 'credit')
+        $today_reject_request_count = Transaction::whereIn('transaction_type', ['credit', 'refund', 'rejected'])
             ->where('description', 'Withdrawal rejected, amount refunded')
             ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->count();
@@ -936,7 +936,7 @@ public function Approved(Request $request)
             // ✅ Log credit transaction
             Transaction::create([
                 'user_id' => $user->id,
-                'transaction_type' => 'credit',
+                'transaction_type' => 'rejected',
                 'amount' => $withdrawal_amount,
                 'description' => 'Withdrawal rejected, amount refunded',
                 'transaction_date' => Carbon::now(),
