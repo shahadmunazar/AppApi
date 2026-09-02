@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 // Public Routes
+Route::post('leads', [App\Http\Controllers\LeadController::class, 'store']);
 Route::post('signup', [RegisterControllerRefferal::class, 'Signup']);
 Route::post('login', [RegisterControllerRefferal::class, 'login']);
 
