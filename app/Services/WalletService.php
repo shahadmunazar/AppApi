@@ -202,6 +202,34 @@ class WalletService
     }
 
     /**
+     * Add referral bonus to a user.
+     */
+    public static function addReferralBonus(User $user, $amount, $description = 'Referral Bonus')
+    {
+        return DB::transaction(function () use ($user, $amount, $description) {
+            $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
+
+            if ($amount > 0) {
+                $lockedUser->bonus_balance += $amount;
+                $lockedUser->balance = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+                $lockedUser->save();
+
+                Transaction::create([
+                    'user_id' => $lockedUser->id,
+                    'transaction_type' => 'bonus',
+                    'amount' => $amount,
+                    'description' => $description,
+                    'confirm_payment' => 'received_successfully',
+                    'transaction_date' => now(),
+                    'available_balance' => $lockedUser->balance
+                ]);
+            }
+            
+            return $lockedUser;
+        });
+    }
+
+    /**
      * Deduct from winning directly (e.g. revoking a win).
      */
     public static function revertWinning(User $user, $amount, $description = 'Game Reverted: Deduction for revoked number')

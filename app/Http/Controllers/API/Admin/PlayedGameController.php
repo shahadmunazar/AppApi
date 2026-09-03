@@ -959,38 +959,13 @@ public function Approved(Request $request)
             $user_id = $user->id;
             $referrer_id = $user->referrer_id;
 
-            $user_balance = $user->balance;
-            $available_balance = $user_balance + $amount;
-            $user->balance = $available_balance;
-            $user->save();
-
-            Transaction::create([
-                'user_id' => $user_id,
-                'amount' => $amount,
-                'transaction_type' => 'credit',
-                'description' => 'Add Money',
-                'available_balance' => $available_balance,
-                'confirm_payment' => 'Added By Amdin',
-                'transaction_date' => Carbon::now(),
-            ]);
+            \App\Services\WalletService::addDeposit($user, $amount, 'Add Money By Admin');
 
             if ($referrer_id) {
                 $referrer = User::find($referrer_id);
                 if ($referrer) {
-                    $referrer_balance = $referrer->balance;
                     $referral_bonus = $amount * 0.05;
-                    $new_referrer_balance = $referrer_balance + $referral_bonus;
-
-                    $referrer->balance = $new_referrer_balance;
-                    $referrer->save();
-                    Transaction::create([
-                        'user_id' => $referrer_id,
-                        'amount' => $referral_bonus,
-                        'transaction_type' => 'bonus',
-                        'description' => 'Referral Bonus',
-                        'available_balance' => $new_referrer_balance,
-                        'confirm_payment' => 'Added By Amdin',
-                    ]);
+                    \App\Services\WalletService::addReferralBonus($referrer, $referral_bonus, 'Referral Bonus');
                 }
             }
 

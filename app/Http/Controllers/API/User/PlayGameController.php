@@ -676,18 +676,7 @@ if ($user->winning_balance < $request_money) {
             $referrer = User::find($referrer_id);
             if ($referrer) {
                 $bonusAmount = $addMoneyRequest->amount * 0.05;
-                $referrer->balance += $bonusAmount;
-                $referrer->save();
-
-                // Log the referral bonus transaction
-                Transaction::create([
-                    'user_id' => $referrer->id,
-                    'transaction_type' => 'bonus',
-                    'amount' => $bonusAmount,
-                    'description' => 'Referral bonus',
-                    'available_balance' => $referrer->balance,
-                    'confirm_payment' => 'received_successfully',
-                ]);
+                \App\Services\WalletService::addReferralBonus($referrer, $bonusAmount, 'Referral bonus');
             }
         }
 
