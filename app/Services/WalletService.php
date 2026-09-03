@@ -18,7 +18,7 @@ class WalletService
         return DB::transaction(function () use ($user, $amount, $description) {
             $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
 
-            $totalPlayable = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+            $totalPlayable = $lockedUser->deposit_balance + $lockedUser->winning_balance;
 
             // Auto-migrate legacy balances for older users
             if ($totalPlayable == 0 && $lockedUser->balance > 0) {
@@ -31,15 +31,6 @@ class WalletService
             }
 
             $amountToDeduct = $amount;
-
-            // 1. Deduct from bonus balance
-            if ($lockedUser->bonus_balance >= $amountToDeduct) {
-                $lockedUser->bonus_balance -= $amountToDeduct;
-                $amountToDeduct = 0;
-            } else {
-                $amountToDeduct -= $lockedUser->bonus_balance;
-                $lockedUser->bonus_balance = 0;
-            }
 
             // 2. Deduct from deposit balance
             if ($amountToDeduct > 0) {

@@ -959,7 +959,7 @@ public function Approved(Request $request)
             $user_id = $user->id;
             $referrer_id = $user->referrer_id;
 
-            \App\Services\WalletService::addDeposit($user, $amount, 'Add Money By Admin');
+            $updatedUser = \App\Services\WalletService::addDeposit($user, $amount, 'Add Money By Admin');
 
             if ($referrer_id) {
                 $referrer = User::find($referrer_id);
@@ -972,7 +972,7 @@ public function Approved(Request $request)
             return response()->json([
                 'status' => 200,
                 'message' => 'Money added to wallet successfully.',
-                'available_balance' => $available_balance
+                'available_balance' => $updatedUser->balance
             ]);
         } catch (\Throwable $th) {
             return response()->json([
