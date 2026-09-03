@@ -14,6 +14,7 @@ use App\Models\WhatsAppNumber;
 use Carbon\Carbon;
 use App\Models\TodayResult;
 use Illuminate\Support\Facades\Password;
+use App\Services\WalletService;
 
 use Illuminate\Support\Facades\DB;
 
@@ -89,6 +90,9 @@ class RegisterControllerRefferal extends Controller
             ]);
         }
 
+        // Apply Joining Bonus
+        WalletService::addJoiningBonus($user);
+
         return response()->json(['status' => 'success', 'user' => $user], 201);
     } catch (\Throwable $th) {
         // Check if mobile number validation failed due to uniqueness constraint
@@ -139,6 +143,9 @@ public function AdminRegister(Request $request){
                 'referred_id' => $user->id,
             ]);
         }
+
+        // Apply Joining Bonus
+        WalletService::addJoiningBonus($user);
 
         return response()->json(['status' => 'success', 'user' => $user], 201);
     } catch (\Throwable $th) {
@@ -320,18 +327,8 @@ public function change_password_admin(Request $request)
                     }
                 }
 
-                // Update user's balance
-                $user->balance += $amount;
-                $user->save();
-
-                // Create a transaction record for user's main transaction
-                $transaction = new Transaction();
-                $transaction->user_id = $user->id;
-                $transaction->transaction_type = 'credit';
-                $transaction->amount = $amount;
-                $transaction->description = 'Added money to balance';
-                $transaction->available_balance = $user->balance;
-                $transaction->save();
+                // Update user's balance and apply deposit bonus
+                WalletService::addDeposit($user, $amount, 'Added money to balance');
 
                 // Commit transaction if all actions succeed
                 DB::commit();

@@ -351,24 +351,19 @@ public function User_Playing_Game(Request $request, $user_id)
                         continue 2; // Skip processing for unknown play_game_id
                 }
 
-                // Log final values before update
-                Log::info("Final Status: $status, Won Amount: $won_amount, Loss Amount: $loss_amount, Available Balance: $available_balance");
-
-                // Create transaction
-                Transaction::create([
-                    'user_id' => $user_id,
-                    'transaction_type' => $transaction_type,
-                    'amount' => $status === 'won' ? $won_amount : $loss_amount,
-                    'description' => 'Game: ' . ucfirst($status),
-                    'transaction_date' => Carbon::now(),
-                    'available_balance' => $available_balance
-                ]);
-
-                // Update user balance only if won
                 if ($status === 'won') {
-                    if (!$this->updateUserBalance($user, $available_balance)) {
-                        Log::error("Failed to update balance for User ID: $user_id");
-                    }
+                    // This will also log the 'won' transaction
+                    \App\Services\WalletService::addWinning($user, $won_amount, 'Game: ' . ucfirst($status));
+                } else {
+                    // For a loss, the amount was already deducted when played, but we log the loss event for history
+                    Transaction::create([
+                        'user_id' => $user_id,
+                        'transaction_type' => 'loss',
+                        'amount' => $loss_amount,
+                        'description' => 'Game: Lost',
+                        'transaction_date' => Carbon::now(),
+                        'available_balance' => $user->balance
+                    ]);
                 }
 
                 // Update played game status and amounts
@@ -436,19 +431,7 @@ public function User_Playing_Game(Request $request, $user_id)
                 $user = User::find($game->user_id);
                 if ($user) {
                     if ($game->status === 'won' && $game->won_amount > 0) {
-                        // Subtract the won amount from user's balance
-                        $user->balance -= $game->won_amount;
-                        $user->save();
-
-                        // Create transaction to log the deduction
-                        Transaction::create([
-                            'user_id' => $user->id,
-                            'transaction_type' => 'debit',
-                            'amount' => $game->won_amount,
-                            'description' => 'Game Reverted: Deduction for revoked number',
-                            'transaction_date' => Carbon::now(),
-                            'available_balance' => $user->balance
-                        ]);
+                        \App\Services\WalletService::revertWinning($user, $game->won_amount, 'Game Reverted: Deduction for revoked number');
                     }
 
                     // For 'lost' games, they already lost the standard entered_amount money when they entered. We do NOT refund standard entered_amount here automatically unless they specifically want the entered money back. Typically, revoking sets it back to `waiting`. If a full refund is needed, we would credit the \`entered_amount\`. Assuming we just reset it to waiting:

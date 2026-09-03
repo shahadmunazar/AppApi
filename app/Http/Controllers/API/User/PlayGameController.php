@@ -146,12 +146,11 @@ public function DoublePlayGame(Request $request) {
 
         $total_entered_amount = array_sum(array_column($entered_data, 'amount'));
 
-        if ($total_entered_amount > $available_balance) {
+        try {
+            \App\Services\WalletService::deductPlayableBalance($user, $total_entered_amount, 'Game played: ' . $subcategory_name);
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Insufficient balance. Please add more money to play all games'], 400);
         }
-
-        $user->balance -= $total_entered_amount;
-        $user->save();
 
         // Create game records
         foreach ($entered_data as $data) {
@@ -230,13 +229,11 @@ public function HarupPlayGame(Request $request){
         $total_entered_amount = array_sum(array_column($entered_data['ander_harup'], 'amount')) +
                                 array_sum(array_column($entered_data['bahar_harup'], 'amount'));
 
-        if ($total_entered_amount > $available_balance) {
+        try {
+            \App\Services\WalletService::deductPlayableBalance($user, $total_entered_amount, 'Game played: ' . $subcategory_name);
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Insufficient balance. Please add more money to play all games'], 400);
         }
-
-        // Deduct the amount from user's balance
-        $user->balance -= $total_entered_amount;
-        $user->save();
 
         // Create game records for ander_harup
         foreach ($entered_data['ander_harup'] as $data) {
@@ -471,11 +468,11 @@ public function number_History()
             ], 403);
         }
 
-        if ($user_balance < $request_money) {
+        if ($user->winning_balance < $request_money) {
             return response()->json([
                 'status' => 403,
                 'data' => null,
-                'message' => 'Insufficient balance. You do not have enough money to request this amount.',
+                'message' => 'Insufficient withdrawable balance. You do not have enough winning money to request this amount.',
             ], 403);
         }
 
@@ -539,17 +536,16 @@ if (!$user) {
     ], 404);
 }
 
-// Ensure sufficient balance
-if ($user->balance < $request_money) {
+// Ensure sufficient winning balance
+if ($user->winning_balance < $request_money) {
     return response()->json([
         'status' => 403,
-        'message' => 'Insufficient balance',
+        'message' => 'Insufficient winning balance',
     ], 403);
 }
 
-// Deduct the requested amount
-$user->balance -= $request_money;
-$user->save();
+// Deduct the requested amount from winning balance
+\App\Services\WalletService::deductWithdrawableBalance($user, $request_money, 'Withdrawal request');
 
         $qr_code_image_url = $qr_code_image_path ? asset('storage/' . $qr_code_image_path) : null;
 
@@ -699,19 +695,8 @@ $user->save();
         $addMoneyRequest->status = 'approved';
         $addMoneyRequest->save();
 
-        // Create the actual transaction
-        $transaction = new Transaction();
-        $transaction->user_id = $user->id;
-        $transaction->transaction_type = 'credit';
-        $transaction->amount = $addMoneyRequest->amount;
-        $transaction->description = 'Added money to balance';
-        $transaction->confirm_payment = 'received_successfully';
-        $transaction->image = $addMoneyRequest->image;
-        $transaction->available_balance = $user->balance + $addMoneyRequest->amount;
-        $transaction->save();
-
-        $user->balance += $addMoneyRequest->amount;
-        $user->save();
+        // Apply the deposit and configurable deposit bonus using WalletService
+        \App\Services\WalletService::addDeposit($user, $addMoneyRequest->amount, 'Added money to balance', $addMoneyRequest->image);
 
         return response()->json([
             'message' => 'Payment status updated successfully.',
