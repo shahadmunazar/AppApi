@@ -20,6 +20,12 @@ class WalletService
 
             $totalPlayable = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
 
+            // Auto-migrate legacy balances for older users
+            if ($totalPlayable == 0 && $lockedUser->balance > 0) {
+                $lockedUser->deposit_balance = $lockedUser->balance;
+                $totalPlayable = $lockedUser->balance;
+            }
+
             if ($totalPlayable < $amount) {
                 throw new Exception("Insufficient playable balance.");
             }
