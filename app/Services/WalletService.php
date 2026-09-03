@@ -55,7 +55,7 @@ class WalletService
             }
 
             // Update main balance
-            $lockedUser->balance = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
             $lockedUser->save();
 
             // Log transaction
@@ -85,7 +85,7 @@ class WalletService
             }
 
             $lockedUser->winning_balance -= $amount;
-            $lockedUser->balance = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
             $lockedUser->save();
 
             // Typically withdrawals are logged when requested or approved, based on caller. 
@@ -103,7 +103,7 @@ class WalletService
             $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
 
             $lockedUser->winning_balance += $amount;
-            $lockedUser->balance = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
             $lockedUser->save();
 
             $transaction = Transaction::create([
@@ -139,7 +139,7 @@ class WalletService
                 $lockedUser->bonus_balance += $bonusAmount;
             }
 
-            $lockedUser->balance = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
             $lockedUser->save();
 
             $transaction = Transaction::create([
@@ -183,7 +183,7 @@ class WalletService
 
             if ($bonusAmount > 0) {
                 $lockedUser->bonus_balance += $bonusAmount;
-                $lockedUser->balance = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+                $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
                 $lockedUser->save();
 
                 Transaction::create([
@@ -211,7 +211,7 @@ class WalletService
 
             if ($amount > 0) {
                 $lockedUser->bonus_balance += $amount;
-                $lockedUser->balance = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+                $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
                 $lockedUser->save();
 
                 Transaction::create([
@@ -270,7 +270,7 @@ class WalletService
                 }
             }
 
-            $lockedUser->balance = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
             $lockedUser->save();
 
             Transaction::create([
