@@ -15,5 +15,6 @@ class Lead extends Model
         'mobile',
         'message',
         'source',
+        'ip',
     ];
 }

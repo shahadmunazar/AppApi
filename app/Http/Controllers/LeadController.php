@@ -14,9 +14,11 @@ class LeadController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
-            'mobile' => 'nullable|string|max:20',
+            'mobile' => 'nullable|string|max:20|unique:leads,mobile',
             'message' => 'nullable|string',
             'source' => 'nullable|string|max:255',
+        ], [
+            'mobile.unique' => 'you are already sent message with us we will contact you soon'
         ]);
 
         if ($validator->fails()) {
@@ -26,7 +28,9 @@ class LeadController extends Controller
             ], 422);
         }
 
-        $lead = Lead::create($request->all());
+        $data = $request->all();
+        $data['ip'] = $request->ip();
+        $lead = Lead::create($data);
 
         return response()->json([
             'status' => 'success',
