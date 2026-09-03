@@ -129,14 +129,22 @@ class WalletService
 
             $lockedUser->deposit_balance += $amount;
             
-            // Calculate deposit bonus
+            // Calculate deposit bonus (bonus unlocking)
             $bonusPercentageSetting = \App\Models\AppSetting::where('key', 'deposit_bonus_percentage')->first();
             $bonusPercentage = $bonusPercentageSetting ? (float)$bonusPercentageSetting->value : 0;
             
-            $bonusAmount = 0;
+            $conversionAmount = 0;
             if ($bonusPercentage > 0) {
-                $bonusAmount = ($amount * $bonusPercentage) / 100;
-                $lockedUser->bonus_balance += $bonusAmount;
+                // How much bonus we are allowed to convert
+                $targetConversion = ($amount * $bonusPercentage) / 100;
+                
+                // We can only convert up to what the user actually has in their bonus_balance
+                $conversionAmount = min($targetConversion, $lockedUser->bonus_balance);
+                
+                if ($conversionAmount > 0) {
+                    $lockedUser->bonus_balance -= $conversionAmount;
+                    $lockedUser->deposit_balance += $conversionAmount;
+                }
             }
 
             $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
@@ -154,12 +162,12 @@ class WalletService
             ]);
 
             // If there's a bonus, we should ideally log it as a separate transaction for clarity
-            if ($bonusAmount > 0) {
+            if ($conversionAmount > 0) {
                 Transaction::create([
                     'user_id' => $lockedUser->id,
                     'transaction_type' => 'bonus',
-                    'amount' => $bonusAmount,
-                    'description' => 'Promotional deposit bonus',
+                    'amount' => $conversionAmount,
+                    'description' => 'Promotional deposit bonus unlocked',
                     'confirm_payment' => 'received_successfully',
                     'transaction_date' => now(),
                     'available_balance' => $lockedUser->balance
