@@ -671,14 +671,7 @@ if ($user->winning_balance < $request_money) {
             ], 403);
         }
 
-        $referrer_id = $user->referrer_id;
-        if ($referrer_id) {
-            $referrer = User::find($referrer_id);
-            if ($referrer) {
-                $bonusAmount = $addMoneyRequest->amount * 0.05;
-                \App\Services\WalletService::addReferralBonus($referrer, $bonusAmount, 'Referral bonus');
-            }
-        }
+        // Referral bonus logic is now centralized in WalletService::addDeposit
 
         // Update the request status
         $addMoneyRequest->status = 'approved';

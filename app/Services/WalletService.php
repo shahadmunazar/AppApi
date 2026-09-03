@@ -173,6 +173,15 @@ class WalletService
                 ]);
             }
 
+            // Award 5% to referrer if user was referred
+            if ($lockedUser->referrer_id) {
+                $referrer = User::find($lockedUser->referrer_id);
+                if ($referrer) {
+                    $referralBonusAmount = $amount * 0.05;
+                    self::addReferralBonus($referrer, $referralBonusAmount, 'Referral Bonus: 5% of deposit');
+                }
+            }
+
             return $transaction;
         });
     }

@@ -961,13 +961,7 @@ public function Approved(Request $request)
 
             $updatedUser = \App\Services\WalletService::addDeposit($user, $amount, 'Add Money By Admin');
 
-            if ($referrer_id) {
-                $referrer = User::find($referrer_id);
-                if ($referrer) {
-                    $referral_bonus = $amount * 0.05;
-                    \App\Services\WalletService::addReferralBonus($referrer, $referral_bonus, 'Referral Bonus');
-                }
-            }
+            // Referral bonus logic is now centralized in WalletService::addDeposit
 
             return response()->json([
                 'status' => 200,
