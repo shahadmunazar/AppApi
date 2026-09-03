@@ -18,7 +18,9 @@ class WalletService
         return DB::transaction(function () use ($user, $amount, $description) {
             $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
 
-            if ($lockedUser->balance < $amount) {
+            $totalPlayable = $lockedUser->bonus_balance + $lockedUser->deposit_balance + $lockedUser->winning_balance;
+
+            if ($totalPlayable < $amount) {
                 throw new Exception("Insufficient playable balance.");
             }
 
