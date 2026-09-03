@@ -93,6 +93,9 @@ class RegisterControllerRefferal extends Controller
         // Apply Joining Bonus
         WalletService::addJoiningBonus($user);
 
+        // Refresh the user model from the database to include updated balances and default columns
+        $user->refresh();
+
         return response()->json(['status' => 'success', 'user' => $user], 201);
     } catch (\Throwable $th) {
         // Check if mobile number validation failed due to uniqueness constraint
