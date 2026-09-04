@@ -10,7 +10,24 @@ use Exception;
 class WalletService
 {
     /**
-     * Deduct the amount from the playable balances in the order: bonus -> deposit -> winning.
+     * Helper to centralize transaction logging
+     */
+    private static function logTransaction($userId, $type, $amount, $desc, $balance, $image = null, $status = null)
+    {
+        return Transaction::create([
+            'user_id' => $userId,
+            'transaction_type' => $type,
+            'amount' => $amount,
+            'description' => $desc,
+            'image' => $image,
+            'confirm_payment' => $status,
+            'available_balance' => $balance,
+            'transaction_date' => now(),
+        ]);
+    }
+
+    /**
+     * Deduct the amount from the playable balances in the order: deposit -> winning.
      * Updates the main balance to reflect the total playable balance.
      */
     public static function deductPlayableBalance(User $user, $amount, $description = 'Deducted for game')
@@ -54,18 +71,10 @@ class WalletService
             }
 
             // Update main balance
-            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
-            $lockedUser->save();
+            $lockedUser->recalculateBalance();
 
             // Log transaction
-            $transaction = Transaction::create([
-                'user_id' => $lockedUser->id,
-                'transaction_type' => 'loss', // Using 'loss' for game deductions to match existing enums if needed
-                'amount' => $amount,
-                'description' => $description,
-                'available_balance' => $lockedUser->balance,
-                'transaction_date' => now(),
-            ]);
+            $transaction = self::logTransaction($lockedUser->id, 'loss', $amount, $description, $lockedUser->balance);
 
             return $transaction;
         });
@@ -84,8 +93,9 @@ class WalletService
             }
 
             $lockedUser->winning_balance -= $amount;
-            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
-            $lockedUser->save();
+            
+            // Update main balance
+            $lockedUser->recalculateBalance();
 
             // Typically withdrawals are logged when requested or approved, based on caller. 
             // We just update the balance here.
@@ -102,17 +112,11 @@ class WalletService
             $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
 
             $lockedUser->winning_balance += $amount;
-            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
-            $lockedUser->save();
+            
+            // Update main balance
+            $lockedUser->recalculateBalance();
 
-            $transaction = Transaction::create([
-                'user_id' => $lockedUser->id,
-                'transaction_type' => 'won',
-                'amount' => $amount,
-                'description' => $description,
-                'transaction_date' => now(),
-                'available_balance' => $lockedUser->balance
-            ]);
+            $transaction = self::logTransaction($lockedUser->id, 'won', $amount, $description, $lockedUser->balance);
 
             return $transaction;
         });
@@ -146,31 +150,14 @@ class WalletService
                 }
             }
 
-            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
-            $lockedUser->save();
+            // Update main balance
+            $lockedUser->recalculateBalance();
 
-            $transaction = Transaction::create([
-                'user_id' => $lockedUser->id,
-                'transaction_type' => 'credit',
-                'amount' => $amount,
-                'description' => $description,
-                'image' => $transactionImage,
-                'confirm_payment' => 'received_successfully',
-                'transaction_date' => now(),
-                'available_balance' => $lockedUser->balance
-            ]);
+            $transaction = self::logTransaction($lockedUser->id, 'credit', $amount, $description, $lockedUser->balance, $transactionImage, 'received_successfully');
 
             // If there's a bonus, we should ideally log it as a separate transaction for clarity
             if ($conversionAmount > 0) {
-                Transaction::create([
-                    'user_id' => $lockedUser->id,
-                    'transaction_type' => 'bonus',
-                    'amount' => $conversionAmount,
-                    'description' => 'Promotional deposit bonus unlocked',
-                    'confirm_payment' => 'received_successfully',
-                    'transaction_date' => now(),
-                    'available_balance' => $lockedUser->balance
-                ]);
+                self::logTransaction($lockedUser->id, 'bonus', $conversionAmount, 'Promotional deposit bonus unlocked', $lockedUser->balance, null, 'received_successfully');
             }
 
             // Award 5% to referrer if user was referred
@@ -199,18 +186,9 @@ class WalletService
 
             if ($bonusAmount > 0) {
                 $lockedUser->bonus_balance += $bonusAmount;
-                $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
-                $lockedUser->save();
+                $lockedUser->recalculateBalance();
 
-                Transaction::create([
-                    'user_id' => $lockedUser->id,
-                    'transaction_type' => 'bonus',
-                    'amount' => $bonusAmount,
-                    'description' => 'Joining bonus',
-                    'confirm_payment' => 'received_successfully',
-                    'transaction_date' => now(),
-                    'available_balance' => $lockedUser->balance
-                ]);
+                self::logTransaction($lockedUser->id, 'bonus', $bonusAmount, 'Joining bonus', $lockedUser->balance, null, 'received_successfully');
             }
             
             return $lockedUser;
@@ -227,18 +205,9 @@ class WalletService
 
             if ($amount > 0) {
                 $lockedUser->bonus_balance += $amount;
-                $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
-                $lockedUser->save();
+                $lockedUser->recalculateBalance();
 
-                Transaction::create([
-                    'user_id' => $lockedUser->id,
-                    'transaction_type' => 'bonus',
-                    'amount' => $amount,
-                    'description' => $description,
-                    'confirm_payment' => 'received_successfully',
-                    'transaction_date' => now(),
-                    'available_balance' => $lockedUser->balance
-                ]);
+                self::logTransaction($lockedUser->id, 'bonus', $amount, $description, $lockedUser->balance, null, 'received_successfully');
             }
             
             return $lockedUser;
@@ -247,17 +216,16 @@ class WalletService
 
     /**
      * Deduct from winning directly (e.g. revoking a win).
+     * If they don't have enough balance, their deposit_balance will go negative to enforce the debt.
      */
     public static function revertWinning(User $user, $amount, $description = 'Game Reverted: Deduction for revoked number')
     {
         return DB::transaction(function () use ($user, $amount, $description) {
             $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
 
-            // Note: If winning_balance goes negative, we might need to deduct from other balances, 
-            // but strict rules imply they lose their winnings. Let's just deduct from winning for simplicity,
-            // or if it goes below 0, take from deposit then bonus.
             $amountToDeduct = $amount;
 
+            // 1. Take from winning
             if ($lockedUser->winning_balance >= $amountToDeduct) {
                 $lockedUser->winning_balance -= $amountToDeduct;
                 $amountToDeduct = 0;
@@ -266,16 +234,7 @@ class WalletService
                 $lockedUser->winning_balance = 0;
             }
 
-            if ($amountToDeduct > 0) {
-                if ($lockedUser->deposit_balance >= $amountToDeduct) {
-                    $lockedUser->deposit_balance -= $amountToDeduct;
-                    $amountToDeduct = 0;
-                } else {
-                    $amountToDeduct -= $lockedUser->deposit_balance;
-                    $lockedUser->deposit_balance = 0;
-                }
-            }
-
+            // 2. Take from bonus
             if ($amountToDeduct > 0) {
                 if ($lockedUser->bonus_balance >= $amountToDeduct) {
                     $lockedUser->bonus_balance -= $amountToDeduct;
@@ -285,18 +244,15 @@ class WalletService
                     $lockedUser->bonus_balance = 0;
                 }
             }
+            
+            // 3. Take from deposit (allow it to go negative to track the remaining debt)
+            if ($amountToDeduct > 0) {
+                $lockedUser->deposit_balance -= $amountToDeduct;
+            }
 
-            $lockedUser->balance = $lockedUser->deposit_balance + $lockedUser->winning_balance;
-            $lockedUser->save();
+            $lockedUser->recalculateBalance();
 
-            Transaction::create([
-                'user_id' => $lockedUser->id,
-                'transaction_type' => 'debit',
-                'amount' => $amount,
-                'description' => $description,
-                'transaction_date' => now(),
-                'available_balance' => $lockedUser->balance
-            ]);
+            self::logTransaction($lockedUser->id, 'debit', $amount, $description, $lockedUser->balance);
             
             return $lockedUser;
         });

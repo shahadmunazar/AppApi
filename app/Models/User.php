@@ -56,4 +56,13 @@ class User extends Authenticatable
     {
         return $this->is_admin;
     }
+
+    /**
+     * Recalculates the main withdrawable/playable balance based on specific balances.
+     */
+    public function recalculateBalance()
+    {
+        $this->balance = $this->deposit_balance + $this->winning_balance;
+        $this->save();
+    }
 }
