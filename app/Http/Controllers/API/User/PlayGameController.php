@@ -468,11 +468,11 @@ public function number_History()
             ], 403);
         }
 
-        if ($user->winning_balance < $request_money) {
+        if ($user->balance < $request_money) {
             return response()->json([
                 'status' => 403,
                 'data' => null,
-                'message' => 'Insufficient withdrawable balance. You do not have enough winning money to request this amount.',
+                'message' => 'Insufficient withdrawable balance. You do not have enough money to request this amount.',
             ], 403);
         }
 
@@ -536,11 +536,11 @@ if (!$user) {
     ], 404);
 }
 
-// Ensure sufficient winning balance
-if ($user->winning_balance < $request_money) {
+// Ensure sufficient balance
+if ($user->balance < $request_money) {
     return response()->json([
         'status' => 403,
-        'message' => 'Insufficient winning balance',
+        'message' => 'Insufficient balance',
     ], 403);
 }
 

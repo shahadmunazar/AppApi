@@ -88,11 +88,35 @@ class WalletService
         return DB::transaction(function () use ($user, $amount, $description) {
             $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
 
-            if ($lockedUser->winning_balance < $amount) {
-                throw new Exception("Insufficient withdrawable winning balance.");
+            $totalWithdrawable = $lockedUser->deposit_balance + $lockedUser->winning_balance;
+
+            if ($totalWithdrawable < $amount) {
+                throw new Exception("Insufficient withdrawable balance.");
             }
 
-            $lockedUser->winning_balance -= $amount;
+            $amountToDeduct = $amount;
+
+            // 1. Take from winning balance first
+            if ($amountToDeduct > 0) {
+                if ($lockedUser->winning_balance >= $amountToDeduct) {
+                    $lockedUser->winning_balance -= $amountToDeduct;
+                    $amountToDeduct = 0;
+                } else {
+                    $amountToDeduct -= $lockedUser->winning_balance;
+                    $lockedUser->winning_balance = 0;
+                }
+            }
+
+            // 2. Take remaining from deposit balance
+            if ($amountToDeduct > 0) {
+                if ($lockedUser->deposit_balance >= $amountToDeduct) {
+                    $lockedUser->deposit_balance -= $amountToDeduct;
+                    $amountToDeduct = 0;
+                } else {
+                    $amountToDeduct -= $lockedUser->deposit_balance;
+                    $lockedUser->deposit_balance = 0;
+                }
+            }
             
             // Update main balance
             $lockedUser->recalculateBalance();
