@@ -31,12 +31,13 @@ class PlayGameController extends Controller
                 'entered_number.*' => 'nullable|numeric',
                 'entered_amount' => 'nullable|array',
                 'entered_amount.*' => 'nullable|numeric',
-                'category_id' => 'nullable|integer',
+                'category_id' => 'required|integer',
                 'subcategory_id' => 'nullable|integer',
                 'subcategory_name' => 'nullable|string',
                 'play_type' => 'nullable|string',
                 'ander_harup' => 'nullable|string',
                 'bahar_harup' => 'nullable|string',
+                'play_game_id' => 'nullable|integer'
             ]);
 
             if ($validator->fails()) {
@@ -46,8 +47,9 @@ class PlayGameController extends Controller
             $validated = $validator->validated();
             $entered_number = $validated['entered_number'] ?? [];
             $entered_amount = $validated['entered_amount'] ?? [];
-            $category_id = $validated['category_id'] ?? null;
-            $Playing_Name = $validated['Playing_Name'] ?? null;
+            $category_id = $validated['category_id'];
+            $subcategory_id = $validated['subcategory_id'] ?? null;
+            $Playing_Name = $validated['subcategory_name'] ?? null;
             $play_type = $validated['play_type'] ?? null;
             $ander_harup = $validated['ander_harup'] ?? null;
             $bahar_harup = $validated['bahar_harup'] ?? null;
@@ -56,6 +58,33 @@ class PlayGameController extends Controller
             $user = Auth::user();
             $user_id = $user->id;
             $user_name = $user->name;
+
+            // Check if game is open
+            $category = Category::where('id', $category_id)->firstOrFail();
+            $current_time = Carbon::now();
+            $open_time = Carbon::parse($category->open_time);
+            $last_time = Carbon::parse($category->last_time)->subMinutes(1);
+
+            if ($open_time->greaterThan($last_time)) {
+                $can_play = $current_time->greaterThanOrEqualTo($open_time) || $current_time->lessThanOrEqualTo($last_time);
+            } else {
+                $can_play = $current_time->between($open_time, $last_time);
+            }
+
+            if (!$can_play) {
+                return response()->json(['error' => 'You cannot play now, this game is closed.'], 422);
+            }
+
+            // Deduct balance
+            $total_entered_amount = array_sum($entered_amount);
+            
+            if ($total_entered_amount > 0) {
+                try {
+                    \App\Services\WalletService::deductPlayableBalance($user, $total_entered_amount, 'Game played: ' . ($Playing_Name ?? 'General'));
+                } catch (\Exception $e) {
+                    return response()->json(['error' => 'Insufficient balance. Please add more money to play all games'], 400);
+                }
+            }
 
             if ($Playing_Name === 'Double') {
                 foreach ($entered_number as $index => $number) {
@@ -93,7 +122,7 @@ class PlayGameController extends Controller
                 ]);
             }
 
-            return response()->json(['message' => 'Game played successfully'], 200);
+            return response()->json(['status' => 200, 'message' => 'Game played successfully'], 200);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             // Handle any unexpected errors
@@ -149,7 +178,7 @@ public function DoublePlayGame(Request $request) {
         try {
             \App\Services\WalletService::deductPlayableBalance($user, $total_entered_amount, 'Game played: ' . $subcategory_name);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Insufficient balance. Please add more money to play all games'], 400);
+            return response()->json(['error' => 'Insufficient balance. Please add more money to play all gamesss'], 400);
         }
 
         // Create game records
