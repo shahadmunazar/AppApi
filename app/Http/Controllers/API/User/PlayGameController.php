@@ -824,18 +824,34 @@ public function DeleteAddMoney(Request $request)
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        // Subtract the amount from the user's balance
-        $user->balance -= $amount;
+        // Check if the user has enough available balance to revert the addition
+        if ($user->balance < $amount) {
+            return response()->json(['message' => 'Insufficient balance to delete this transaction.'], 400);
+        }
+
+        // Properly deduct the amount from deposit_balance first, then winning_balance
+        $amountToDeduct = $amount;
+        if ($user->deposit_balance >= $amountToDeduct) {
+            $user->deposit_balance -= $amountToDeduct;
+            $amountToDeduct = 0;
+        } else {
+            $amountToDeduct -= $user->deposit_balance;
+            $user->deposit_balance = 0;
+        }
+
+        if ($amountToDeduct > 0) {
+            $user->winning_balance -= $amountToDeduct;
+        }
 
         // Save the updated user balance
-        $user->save();
+        $user->recalculateBalance();
 
         // Delete the transaction
         $transaction_d->delete();
 
         return response()->json([
             'message' => 'Transaction deleted successfully',
-            'user_balance' => $user->wallet_balance,
+            'user_balance' => $user->balance,
         ]);
     } catch (\Exception $e) {
         // Handle errors gracefully
