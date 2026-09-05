@@ -228,7 +228,8 @@ class WalletService
             $lockedUser = User::where('id', $user->id)->lockForUpdate()->first();
 
             if ($amount > 0) {
-                $lockedUser->bonus_balance += $amount;
+                $lockedUser->deposit_balance += $amount; // Added to deposit_balance so it's playable/withdrawable
+                $lockedUser->earnings += $amount; // Also update the earnings column
                 $lockedUser->recalculateBalance();
 
                 self::logTransaction($lockedUser->id, 'bonus', $amount, $description, $lockedUser->balance, null, 'received_successfully');
