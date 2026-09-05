@@ -82,7 +82,7 @@ class PlayGameController extends Controller
                 try {
                     \App\Services\WalletService::deductPlayableBalance($user, $total_entered_amount, 'Game played: ' . ($Playing_Name ?? 'General'));
                 } catch (\Exception $e) {
-                    return response()->json(['error' => 'Insufficient balance. Please add more money to play all games', 'debug_error' => $e->getMessage()], 400);
+                    return response()->json(['error' => 'Error: ' . $e->getMessage()], 400);
                 }
             }
 
@@ -178,7 +178,7 @@ public function DoublePlayGame(Request $request) {
         try {
             \App\Services\WalletService::deductPlayableBalance($user, $total_entered_amount, 'Game played: ' . $subcategory_name);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Insufficient balance. Please add more money to play all games', 'debug_error' => $e->getMessage()], 400);
+            return response()->json(['error' => 'Error: ' . $e->getMessage()], 400);
         }
 
         // Create game records

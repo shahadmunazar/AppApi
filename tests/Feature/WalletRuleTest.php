@@ -88,7 +88,7 @@ class WalletRuleTest extends TestCase
             'winning_balance' => 0,
         ]);
 
-        WalletService::deductPlayableBalance($user, 15);
+        WalletService::deductPlayableBalance($user);
         $user->refresh();
 
         // 10 should come from bonus, 5 from deposit
