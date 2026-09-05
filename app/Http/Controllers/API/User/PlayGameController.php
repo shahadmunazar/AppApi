@@ -601,6 +601,8 @@ if ($user->balance < $request_money) {
             return [
                 'id' => $req->id,
                 'user_id' => $req->user_id,
+                'user_name' => $req->user ? $req->user->name : null,
+                'user_mobile' => $req->user ? $req->user->mobile : null,
                 'amount' => $req->amount,
                 'image' => $req->image,
                 'confirm_payment' => $req->status === 'pending' ? 'not_confirm' : ($req->status === 'approved' ? 'received_successfully' : 'rejected'),
