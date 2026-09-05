@@ -22,6 +22,7 @@ class WithdrawalMoney extends Model
         'bank_name',
         'branch_name',
         'withdrawal_money_status',
-        'qr_code_image'
+        'qr_code_image',
+        'payment_screenshot'
     ];
 }

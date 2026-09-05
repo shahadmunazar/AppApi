@@ -866,7 +866,8 @@ public function Approved(Request $request)
         // Validate the request
         $validator = Validator::make($request->all(), [
             'id' => 'required|exists:withdrawal_money,id',
-'payment_status' => 'required|string',
+            'payment_status' => 'required|string',
+            'payment_screenshot' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
         ]);
 
         if ($validator->fails()) {
@@ -891,6 +892,11 @@ public function Approved(Request $request)
         $withdrawal_amount = $withdrawal->request_money;
 
         if ($payment_status === 'approved') {
+            if ($request->hasFile('payment_screenshot')) {
+                $imagePath = $request->file('payment_screenshot')->store('payment_screenshots', 'public');
+                $withdrawal->payment_screenshot = $imagePath;
+            }
+
             // ✅ Update status to approved
             $withdrawal->withdrawal_money_status = 'approved';
             $withdrawal->save();

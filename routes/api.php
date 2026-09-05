@@ -136,7 +136,7 @@ Route::get('play-game-history-user/{user_id}',[PlayedGameController::class, 'Use
 
     Route::post('approved-payment',[PlayedGameController::class,'Approved']);
     Route::get('all-withdrawal-list', [PlayedGameController::class, 'all_request_money_list']);
-    Route::put('update-withdrawal-status/', [PlayedGameController::class, 'update_withdrawal_req']);
+    Route::post('update-withdrawal-status/', [PlayedGameController::class, 'update_withdrawal_req']);
     Route::put('update-status', [CategoryController::class, 'update_status']);
     Route::delete('delete-request/{payment_id}',[PlayedGameController::class,'Played_game_delete']);
     // Transaction and Play Game Management
