@@ -31,7 +31,7 @@ class PlayGameController extends Controller
                 'entered_number.*' => 'nullable|numeric',
                 'entered_amount' => 'nullable|array',
                 'entered_amount.*' => 'nullable|numeric',
-                'category_id' => 'required|integer',
+                'category_id' => 'nullable|integer',
                 'subcategory_id' => 'nullable|integer',
                 'subcategory_name' => 'nullable|string',
                 'play_type' => 'nullable|string',
@@ -47,7 +47,7 @@ class PlayGameController extends Controller
             $validated = $validator->validated();
             $entered_number = $validated['entered_number'] ?? [];
             $entered_amount = $validated['entered_amount'] ?? [];
-            $category_id = $validated['category_id'];
+            $category_id = $validated['category_id'] ?? null;
             $subcategory_id = $validated['subcategory_id'] ?? null;
             $Playing_Name = $validated['subcategory_name'] ?? null;
             $play_type = $validated['play_type'] ?? null;
@@ -59,20 +59,22 @@ class PlayGameController extends Controller
             $user_id = $user->id;
             $user_name = $user->name;
 
-            // Check if game is open
-            $category = Category::where('id', $category_id)->firstOrFail();
-            $current_time = Carbon::now();
-            $open_time = Carbon::parse($category->open_time);
-            $last_time = Carbon::parse($category->last_time)->subMinutes(1);
+            // Check if game is open only if category_id is provided
+            if ($category_id) {
+                $category = Category::where('id', $category_id)->firstOrFail();
+                $current_time = Carbon::now();
+                $open_time = Carbon::parse($category->open_time);
+                $last_time = Carbon::parse($category->last_time)->subMinutes(1);
 
-            if ($open_time->greaterThan($last_time)) {
-                $can_play = $current_time->greaterThanOrEqualTo($open_time) || $current_time->lessThanOrEqualTo($last_time);
-            } else {
-                $can_play = $current_time->between($open_time, $last_time);
-            }
+                if ($open_time->greaterThan($last_time)) {
+                    $can_play = $current_time->greaterThanOrEqualTo($open_time) || $current_time->lessThanOrEqualTo($last_time);
+                } else {
+                    $can_play = $current_time->between($open_time, $last_time);
+                }
 
-            if (!$can_play) {
-                return response()->json(['error' => 'You cannot play now, this game is closed.'], 422);
+                if (!$can_play) {
+                    return response()->json(['error' => 'You cannot play now, this game is closed.'], 422);
+                }
             }
 
             // Deduct balance
