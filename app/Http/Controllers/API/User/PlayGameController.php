@@ -82,7 +82,7 @@ class PlayGameController extends Controller
                 try {
                     \App\Services\WalletService::deductPlayableBalance($user, $total_entered_amount, 'Game played: ' . ($Playing_Name ?? 'General'));
                 } catch (\Exception $e) {
-                    return response()->json(['error' => 'Insufficient balance. Please add more money to play all games'], 400);
+                    return response()->json(['error' => 'Insufficient balance. Please add more money to play all games', 'debug_error' => $e->getMessage()], 400);
                 }
             }
 
@@ -126,7 +126,7 @@ class PlayGameController extends Controller
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             // Handle any unexpected errors
-            return response()->json(['error' => 'An error occurred'], 500);
+            return response()->json(['error' => 'An error occurred', 'debug_error' => $th->getMessage()], 500);
         }
     }
     
@@ -178,7 +178,7 @@ public function DoublePlayGame(Request $request) {
         try {
             \App\Services\WalletService::deductPlayableBalance($user, $total_entered_amount, 'Game played: ' . $subcategory_name);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Insufficient balance. Please add more money to play all gamesss'], 400);
+            return response()->json(['error' => 'Insufficient balance. Please add more money to play all games', 'debug_error' => $e->getMessage()], 400);
         }
 
         // Create game records
@@ -201,7 +201,7 @@ public function DoublePlayGame(Request $request) {
         // Log the error for debugging purposes
         Log::error('Error in DoublePlayGame: '.$th->getMessage());
 
-        return response()->json(['error' => 'An error occurred'], 500);
+        return response()->json(['error' => 'An error occurred', 'debug_error' => $th->getMessage()], 500);
     }
 }
 
