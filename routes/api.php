@@ -115,6 +115,9 @@ Route::delete('delete-add-money', [PlayGameController::class, 'DeleteAddMoney'])
     Route::get('play-games-numbers', [PlayGameController::class, 'PlayGame_Category']);
     Route::get('play-games-number-harup',[PlayGameController::class,'PlayGame_Harup']);
 
+
+
+    
     Route::post('add-money-to-users', [PlayedGameController::class, 'Add_Money_To_wallet']);
     //routes for content -change 
         Route::get('home-content-list',[CategoryController::class,'Content_Game']);
