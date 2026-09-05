@@ -817,6 +817,7 @@ public function DeleteAddMoney(Request $request)
 
         $find_user_id = $transaction_d->user_id;
         $amount = $transaction_d->amount;
+        $transactionDate = \Carbon\Carbon::parse($transaction_d->created_at);
 
         // Find the user record
         $user = User::where('id', $find_user_id)->first();
@@ -824,13 +825,23 @@ public function DeleteAddMoney(Request $request)
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        // Check if the user has enough available balance to revert the addition
-        if ($user->balance < $amount) {
-            return response()->json(['message' => 'Insufficient balance to delete this transaction.'], 400);
+        // --- 1. Revert the Promotional Deposit Bonus (if any) ---
+        $bonusTransaction = Transaction::where('user_id', $user->id)
+            ->where('transaction_type', 'bonus')
+            ->where('description', 'Promotional deposit bonus unlocked')
+            ->where('created_at', '>=', $transactionDate->copy()->subSeconds(10))
+            ->where('created_at', '<=', $transactionDate->copy()->addSeconds(10))
+            ->first();
+
+        $convertedAmount = $bonusTransaction ? $bonusTransaction->amount : 0;
+        $totalToDeductFromUser = $amount + $convertedAmount;
+
+        if ($user->balance < $totalToDeductFromUser) {
+            return response()->json(['message' => 'Insufficient balance to delete this transaction and its bonuses.'], 400);
         }
 
-        // Properly deduct the amount from deposit_balance first, then winning_balance
-        $amountToDeduct = $amount;
+        // Deduct the main amount + converted bonus from deposit_balance first, then winning_balance
+        $amountToDeduct = $totalToDeductFromUser;
         if ($user->deposit_balance >= $amountToDeduct) {
             $user->deposit_balance -= $amountToDeduct;
             $amountToDeduct = 0;
@@ -843,14 +854,61 @@ public function DeleteAddMoney(Request $request)
             $user->winning_balance -= $amountToDeduct;
         }
 
+        // Return the converted amount back to locked bonus_balance
+        if ($convertedAmount > 0) {
+            $user->bonus_balance += $convertedAmount;
+            $bonusTransaction->delete();
+        }
+
         // Save the updated user balance
         $user->recalculateBalance();
 
-        // Delete the transaction
+        // --- 2. Revert the Referral Bonus from the Referrer (if any) ---
+        if ($user->referrer_id) {
+            $referrer = User::where('id', $user->referrer_id)->first();
+            if ($referrer) {
+                $refBonusAmount = $amount * 0.05;
+
+                $referrerBonusTransaction = Transaction::where('user_id', $referrer->id)
+                    ->where('transaction_type', 'bonus')
+                    ->where('description', 'like', 'Referral Bonus%')
+                    ->where('created_at', '>=', $transactionDate->copy()->subSeconds(10))
+                    ->where('created_at', '<=', $transactionDate->copy()->addSeconds(10))
+                    ->first();
+
+                if ($referrerBonusTransaction) {
+                    $referrerBonusTransaction->delete();
+                }
+
+                // Deduct from referrer's earnings
+                $referrer->earnings = max(0, $referrer->earnings - $refBonusAmount);
+
+                // Deduct from referrer's playable balance
+                $refDeduct = $refBonusAmount;
+                if ($referrer->deposit_balance >= $refDeduct) {
+                    $referrer->deposit_balance -= $refDeduct;
+                    $refDeduct = 0;
+                } else {
+                    $refDeduct -= $referrer->deposit_balance;
+                    $referrer->deposit_balance = 0;
+                }
+                
+                if ($refDeduct > 0) {
+                    $referrer->winning_balance -= $refDeduct;
+                    if ($referrer->winning_balance < 0) {
+                        $referrer->winning_balance = 0; // Prevent negative
+                    }
+                }
+
+                $referrer->recalculateBalance();
+            }
+        }
+
+        // Delete the main transaction
         $transaction_d->delete();
 
         return response()->json([
-            'message' => 'Transaction deleted successfully',
+            'message' => 'Transaction and related bonuses deleted successfully',
             'user_balance' => $user->balance,
         ]);
     } catch (\Exception $e) {
