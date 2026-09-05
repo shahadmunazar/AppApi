@@ -12,7 +12,7 @@ class WalletService
     /**
      * Helper to centralize transaction logging
      */
-    private static function logTransaction($userId, $type, $amount, $desc, $balance, $image = null, $status = null)
+    private static function logTransaction($userId, $type, $amount, $desc, $balance, $image = null, $status = 'received_successfully')
     {
         return Transaction::create([
             'user_id' => $userId,
