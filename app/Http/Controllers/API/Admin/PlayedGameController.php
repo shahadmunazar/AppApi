@@ -1245,31 +1245,49 @@ public function UserHistoryAllLis(Request $request) {
                 ->orderBy('amount', 'desc')
                 ->first();
                 
-            $users_query = Transaction::with('user')
-                ->whereIn('transaction_type', ['won', 'loss', 'debit']);
-                
-            if ($date) {
-                $users_query->whereDate('created_at', $date);
-            }
-            
-            $users_stats_raw = $users_query->select('user_id',
+            $bets_raw = PlayGame::select('user_id', \DB::raw('SUM(entered_amount) as total_bet'))
+                ->when($date, function($query) use ($date) {
+                    return $query->whereDate('created_at', $date);
+                })
+                ->groupBy('user_id')
+                ->get()
+                ->keyBy('user_id');
+
+            $transactions_raw = Transaction::select('user_id',
                     \DB::raw("SUM(CASE WHEN transaction_type = 'won' THEN amount ELSE 0 END) as total_won"),
                     \DB::raw("SUM(CASE WHEN transaction_type IN ('loss', 'debit') THEN amount ELSE 0 END) as total_loss")
                 )
+                ->whereIn('transaction_type', ['won', 'loss', 'debit'])
+                ->when($date, function($query) use ($date) {
+                    return $query->whereDate('created_at', $date);
+                })
                 ->groupBy('user_id')
-                ->orderBy('total_won', 'desc')
-                ->get();
-                
+                ->get()
+                ->keyBy('user_id');
+
+            $userIds = $bets_raw->keys()->merge($transactions_raw->keys())->unique();
+            $users = \App\Models\User::whereIn('id', $userIds)->get()->keyBy('id');
+
             $users_list = [];
-            foreach ($users_stats_raw as $stat) {
+            foreach ($userIds as $userId) {
+                $user = $users->get($userId);
+                $total_bet = $bets_raw->has($userId) ? $bets_raw->get($userId)->total_bet : 0;
+                $total_won = $transactions_raw->has($userId) ? $transactions_raw->get($userId)->total_won : 0;
+                $total_loss = $transactions_raw->has($userId) ? $transactions_raw->get($userId)->total_loss : 0;
+
                 $users_list[] = [
-                    'user_id' => $stat->user_id,
-                    'user_name' => $stat->user ? $stat->user->name : 'Unknown',
-                    'user_mobile' => $stat->user ? $stat->user->mobile : '-',
-                    'total_won' => round($stat->total_won, 2),
-                    'total_loss' => round($stat->total_loss, 2),
+                    'user_id' => $userId,
+                    'user_name' => $user ? $user->name : 'Unknown',
+                    'user_mobile' => $user ? $user->mobile : '-',
+                    'total_bet' => round($total_bet, 2),
+                    'total_won' => round($total_won, 2),
+                    'total_loss' => round($total_loss, 2),
                 ];
             }
+
+            usort($users_list, function($a, $b) {
+                return $b['total_won'] <=> $a['total_won'] ?: $b['total_bet'] <=> $a['total_bet'];
+            });
 
             $data = [
                 'date' => $date ? $date : 'All Time',
