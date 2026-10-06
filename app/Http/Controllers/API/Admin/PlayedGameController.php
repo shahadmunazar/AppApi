@@ -673,6 +673,20 @@ public function AdminDashboard(Request $request)
             ->whereBetween('created_at', [businessStart(), businessEnd()])
             ->count();
 
+        // Total Money Added
+        $total_money_added = Transaction::where('transaction_type', 'credit')
+            ->where('description', '!=', 'Withdrawal rejected, amount refunded')
+            ->sum('amount');
+        $total_money_added_count = Transaction::where('transaction_type', 'credit')
+            ->where('description', '!=', 'Withdrawal rejected, amount refunded')
+            ->count();
+
+        // Total Withdrawal
+        $total_withdrawal = Transaction::where('transaction_type', 'withdrawal')
+            ->sum('amount');
+        $total_withdrawal_count = Transaction::where('transaction_type', 'withdrawal')
+            ->count();
+
         // Total Transactions
         $total_amount_transaction = Transaction::sum('amount');
         $total_count_transaction = Transaction::count();
@@ -680,6 +694,10 @@ public function AdminDashboard(Request $request)
         return response()->json([
             'status' => 200,
             'data' => [
+                'total_money_added' => round($total_money_added, 2),
+                'total_money_added_count' => $total_money_added_count,
+                'total_withdrawal' => round($total_withdrawal, 2),
+                'total_withdrawal_count' => $total_withdrawal_count,
                 'today_request_money' => round($today_request_money, 2),
                 'today_transaction_count' => $today_transaction_count,
                 'today_credit_money' => round($today_credit_money, 2),
