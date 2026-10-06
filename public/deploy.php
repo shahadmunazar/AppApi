@@ -1,5 +1,10 @@
 <?php
 
+ini_set("display_errors", 1);
+ini_set("display_startup_errors", 1);
+error_reporting(E_ALL);
+
+
 // The secret token you configure in GitHub Webhook settings
 // You MUST change this to a secure random string and update your GitHub webhook settings
 $secret = 'saimashahad12081002';
