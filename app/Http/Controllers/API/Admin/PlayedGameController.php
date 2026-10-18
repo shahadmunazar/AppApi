@@ -1055,6 +1055,32 @@ public function Approved(Request $request)
                 $item->user_live_balance = $item->user ? (string)$item->user->balance : '0.00';
                 $item->user_deposit_balance = $item->user ? (string)$item->user->deposit_balance : '0.00';
                 $item->user_winning_balance = $item->user ? (string)$item->user->winning_balance : '0.00';
+
+                // Check if user has used any of this added money
+                $userDepositBal = $item->user ? (float)$item->user->deposit_balance : 0;
+                $userLiveBal = $item->user ? (float)$item->user->balance : 0;
+                $addedAmount = (float)$item->amount;
+                $currentBalanceAtAdd = (float)$item->current_balance;
+
+                if ($userDepositBal < $addedAmount || $userLiveBal < $addedAmount) {
+                    $item->is_used = true;
+                    $item->can_delete = false;
+                } elseif ($currentBalanceAtAdd > 0 && $userDepositBal < $currentBalanceAtAdd && ($currentBalanceAtAdd - $userDepositBal) > 0.01) {
+                    $item->is_used = true;
+                    $item->can_delete = false;
+                } else {
+                    $hasPlayedAfter = \App\Models\PlayGame::where('user_id', $item->user_id)
+                        ->where('created_at', '>=', $item->created_at)
+                        ->exists();
+
+                    if ($hasPlayedAfter && $currentBalanceAtAdd > 0 && $userDepositBal < $currentBalanceAtAdd) {
+                        $item->is_used = true;
+                        $item->can_delete = false;
+                    } else {
+                        $item->is_used = false;
+                        $item->can_delete = true;
+                    }
+                }
             }
 
             return response()->json([
@@ -1122,6 +1148,32 @@ public function Approved(Request $request)
                 $transaction->user_live_balance = $userDetails ? (string)$userDetails->balance : '0.00';
                 $transaction->user_deposit_balance = $userDetails ? (string)$userDetails->deposit_balance : '0.00';
                 $transaction->user_winning_balance = $userDetails ? (string)$userDetails->winning_balance : '0.00';
+
+                // Check if user has used any of this added money
+                $userDepositBal = $userDetails ? (float)$userDetails->deposit_balance : 0;
+                $userLiveBal = $userDetails ? (float)$userDetails->balance : 0;
+                $addedAmount = (float)$transaction->amount;
+                $currentBalanceAtAdd = (float)$transaction->available_balance;
+
+                if ($userDepositBal < $addedAmount || $userLiveBal < $addedAmount) {
+                    $transaction->is_used = true;
+                    $transaction->can_delete = false;
+                } elseif ($currentBalanceAtAdd > 0 && $userDepositBal < $currentBalanceAtAdd && ($currentBalanceAtAdd - $userDepositBal) > 0.01) {
+                    $transaction->is_used = true;
+                    $transaction->can_delete = false;
+                } else {
+                    $hasPlayedAfter = \App\Models\PlayGame::where('user_id', $user_id)
+                        ->where('created_at', '>=', $transaction->created_at)
+                        ->exists();
+
+                    if ($hasPlayedAfter && $currentBalanceAtAdd > 0 && $userDepositBal < $currentBalanceAtAdd) {
+                        $transaction->is_used = true;
+                        $transaction->can_delete = false;
+                    } else {
+                        $transaction->is_used = false;
+                        $transaction->can_delete = true;
+                    }
+                }
 
             // Convert the created_at timestamp to Asia/Kolkata timezone (should already be set in config/app.php)
             $transaction->created_at = Carbon::parse($transaction->created_at)->setTimezone('Asia/Kolkata')->toDateTimeString();
