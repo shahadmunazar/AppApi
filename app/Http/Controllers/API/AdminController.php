@@ -340,7 +340,7 @@ class AdminController extends Controller
                 ]);
                 if ($search) {
                     $query->where(function ($q) use ($search) {
-                        $q->where('reason', 'LIKE', "%{$search}%")
+                        $q->where('description', 'LIKE', "%{$search}%")
                           ->orWhere('amount', 'LIKE', "%{$search}%")
                           ->orWhereHas('user', function ($uq) use ($search) {
                               $uq->where('name', 'LIKE', "%{$search}%")

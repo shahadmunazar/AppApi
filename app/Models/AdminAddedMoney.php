@@ -45,4 +45,12 @@ class AdminAddedMoney extends Model implements Auditable
     {
         return $this->belongsTo(Transaction::class, 'transaction_id')->withTrashed();
     }
+
+    /**
+     * Get the admin user who credited the amount, including soft deleted admins.
+     */
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id')->withTrashed();
+    }
 }
