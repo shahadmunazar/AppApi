@@ -9,6 +9,7 @@ use App\Http\Controllers\API\User\CategoryControllerUser;
 use App\Http\Controllers\API\User\PlayGameController;
 use App\Http\Controllers\RegisterControllerRefferal;
 use App\Http\Controllers\API\AppSettingController;
+use App\Http\Controllers\API\ChatController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,6 +68,8 @@ Route::prefix('user')->middleware(['auth:sanctum', 'check.user.type:user'])->gro
     Route::get('play_game', [PlayGameController::class, 'Play_game_history']);
     Route::post('play-game-set-bet', [PlayGameController::class, 'playGame']);
     Route::get('statement-user', [AllTransactionController::class, 'All_StateMents']);
+    
+
 });
 
 // Admin Routes (Authenticated with Sanctum and check.user.type:admin middleware)
@@ -127,6 +130,7 @@ Route::delete('delete-add-money', [PlayGameController::class, 'DeleteAddMoney'])
         Route::delete('home-content-delete/{content_id}',[CategoryController::class,'Content_Game_delete']);
 
     Route::get('all-money-added-list',[PlayedGameController::class,'All_Transaction']);
+    Route::get('admin-added-money-list', [PlayedGameController::class, 'Admin_Added_Money_List']);
     Route::get('all-transaction/{transaction_id}',[PlayedGameController::class,'Transaction_Details']);
 Route::put('transaction-update-id', [PlayedGameController::class, 'Transaction_UpdateS']);
 
@@ -148,7 +152,7 @@ Route::delete('delete-payment-history/{transaction_id}', [PlayGameController::cl
     
         Route::delete('delete-game/{id}',[PlayedGameController::class,'Delete_Game_History']);
         Route::get('user-referall-list',[PlayedGameController::class,'UserReferalIst']);
-        Route::delete('add-money',[PlayedGameController::class,'delete_AddMoney']);
+        Route::delete('add-money',[PlayGameController::class,'DeleteAddMoney']);
     
     Route::put('user-status',[PlayedGameController::class,'UserStatus']);
     Route::get('get-user-statement',[PlayedGameController::class,'UserHistoryAllLis']);
@@ -172,5 +176,16 @@ Route::put('result_today', [CategoryController::class, 'result_today']);
     Route::post('revoke-number', [PlayedGameController::class, 'revoke_number']);
 
     Route::post('open-current-number', [PlayedGameController::class, 'played_game']);
+    Route::get('audit-logs', [AdminController::class, 'audit_logs']);
+    Route::get('deleted-records', [AdminController::class, 'deleted_records']);
+    Route::post('restore-record', [AdminController::class, 'restore_record']);
+});
+
+// Chat Routes (Accessible by both Users and Admins)
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('channels/{channel}/messages', [ChatController::class, 'index']);
+    Route::post('channels/{channel}/messages', [ChatController::class, 'store']);
+    Route::post('channels/{channel}/upload', [ChatController::class, 'uploadMedia']);
+    Route::post('messages/{message}/like', [ChatController::class, 'likeMessage']);
 });
 

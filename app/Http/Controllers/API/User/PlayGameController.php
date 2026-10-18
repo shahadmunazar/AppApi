@@ -840,25 +840,46 @@ public function DeleteAddMoney(Request $request)
             'id' => 'required|integer',
         ]);
 
-        $transaction_id = $request->id;
+        $id = $request->id;
 
-        // Find the transaction record
-        $transaction_d = Transaction::where('id', $transaction_id)->first();
-        if (!$transaction_d) {
-            return response()->json(['message' => 'Transaction not found'], 404);
+        // Try finding by AdminAddedMoney first, then Transaction
+        $adminAddedMoney = \App\Models\AdminAddedMoney::find($id);
+        $transaction_d = null;
+
+        if ($adminAddedMoney) {
+            $find_user_id = $adminAddedMoney->user_id;
+            $amount = (float) $adminAddedMoney->amount;
+            $transactionDate = \Carbon\Carbon::parse($adminAddedMoney->created_at);
+            $currentBalanceAtAdd = (float) $adminAddedMoney->current_balance;
+            if ($adminAddedMoney->transaction_id) {
+                $transaction_d = Transaction::find($adminAddedMoney->transaction_id);
+            }
+        } else {
+            $transaction_d = Transaction::where('id', $id)->first();
+            if (!$transaction_d) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Transaction record not found'
+                ], 404);
+            }
+
+            $find_user_id = $transaction_d->user_id;
+            $amount = (float) $transaction_d->amount;
+            $transactionDate = \Carbon\Carbon::parse($transaction_d->created_at);
+            $currentBalanceAtAdd = (float) $transaction_d->available_balance;
+            $adminAddedMoney = \App\Models\AdminAddedMoney::where('transaction_id', $transaction_d->id)->first();
         }
 
-        $find_user_id = $transaction_d->user_id;
-        $amount = $transaction_d->amount;
-        $transactionDate = \Carbon\Carbon::parse($transaction_d->created_at);
-
-        // Find the user record
-        $user = User::where('id', $find_user_id)->first();
+        // Find the user record (including soft-deleted)
+        $user = User::withTrashed()->where('id', $find_user_id)->first();
         if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found'
+            ], 404);
         }
 
-        // --- 1. Revert the Promotional Deposit Bonus (if any) ---
+        // --- 1. Check Promotional Deposit Bonus (if any) ---
         $bonusTransaction = Transaction::where('user_id', $user->id)
             ->where('transaction_type', 'bonus')
             ->where('description', 'Promotional deposit bonus unlocked')
@@ -866,39 +887,53 @@ public function DeleteAddMoney(Request $request)
             ->where('created_at', '<=', $transactionDate->copy()->addSeconds(10))
             ->first();
 
-        $convertedAmount = $bonusTransaction ? $bonusTransaction->amount : 0;
-        $totalToDeductFromUser = $amount + $convertedAmount;
+        $convertedAmount = $bonusTransaction ? (float) $bonusTransaction->amount : 0;
+        $totalToDeductFromDeposit = $amount + $convertedAmount;
 
-        if ($user->balance < $totalToDeductFromUser) {
-            return response()->json(['message' => 'Insufficient balance to delete this transaction and its bonuses.'], 400);
+        // --- CRUCIAL VALIDATION: Make sure added money cannot be deleted if used or not equal ---
+        // 1. User must have sufficient deposit balance (cannot take from winnings or if money was used)
+        if ($user->deposit_balance < $totalToDeductFromDeposit) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Cannot delete: This added money has already been used. User's available deposit balance is ₹{$user->deposit_balance}, which is less than the required ₹{$totalToDeductFromDeposit}."
+            ], 400);
         }
 
-        // Deduct the main amount + converted bonus from deposit_balance first, then winning_balance
-        $amountToDeduct = $totalToDeductFromUser;
-        if ($user->deposit_balance >= $amountToDeduct) {
-            $user->deposit_balance -= $amountToDeduct;
-            $amountToDeduct = 0;
-        } else {
-            $amountToDeduct -= $user->deposit_balance;
-            $user->deposit_balance = 0;
+        // 2. User's total balance must be at least totalToDeductFromDeposit
+        if ($user->balance < $totalToDeductFromDeposit) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Cannot delete: User's total balance is ₹{$user->balance}, which is less than the required ₹{$totalToDeductFromDeposit}."
+            ], 400);
         }
 
-        if ($amountToDeduct > 0) {
-            $user->winning_balance -= $amountToDeduct;
+        // 3. Check if user played games using deposit balance since the deposit
+        $playedGamesAfter = \App\Models\PlayGame::where('user_id', $user->id)
+            ->where('created_at', '>=', $transactionDate)
+            ->exists();
+
+        if ($playedGamesAfter && $currentBalanceAtAdd > 0 && $user->deposit_balance < $currentBalanceAtAdd && ($currentBalanceAtAdd - $user->deposit_balance) > 0.01) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Cannot delete: The user has already placed bets or played games using this deposited money."
+            ], 400);
         }
 
-        // Return the converted amount back to locked bonus_balance
-        if ($convertedAmount > 0) {
+        // Deduct STRICTLY from deposit_balance (never from winnings)
+        $user->deposit_balance -= $totalToDeductFromDeposit;
+
+        // Return converted bonus back to locked bonus_balance if applicable
+        if ($convertedAmount > 0 && $bonusTransaction) {
             $user->bonus_balance += $convertedAmount;
-            $bonusTransaction->delete();
+            $bonusTransaction->delete(); // Soft delete
         }
 
-        // Save the updated user balance
+        // Recalculate and save user balance
         $user->recalculateBalance();
 
         // --- 2. Revert the Referral Bonus from the Referrer (if any) ---
         if ($user->referrer_id) {
-            $referrer = User::where('id', $user->referrer_id)->first();
+            $referrer = User::withTrashed()->where('id', $user->referrer_id)->first();
             if ($referrer) {
                 $refBonusAmount = $amount * 0.05;
 
@@ -910,44 +945,46 @@ public function DeleteAddMoney(Request $request)
                     ->first();
 
                 if ($referrerBonusTransaction) {
-                    $referrerBonusTransaction->delete();
+                    $referrerBonusTransaction->delete(); // Soft delete
                 }
 
                 // Deduct from referrer's earnings
                 $referrer->earnings = max(0, $referrer->earnings - $refBonusAmount);
 
-                // Deduct from referrer's playable balance
+                // Deduct from referrer's deposit balance
                 $refDeduct = $refBonusAmount;
                 if ($referrer->deposit_balance >= $refDeduct) {
                     $referrer->deposit_balance -= $refDeduct;
-                    $refDeduct = 0;
                 } else {
                     $refDeduct -= $referrer->deposit_balance;
                     $referrer->deposit_balance = 0;
-                }
-                
-                if ($refDeduct > 0) {
-                    $referrer->winning_balance -= $refDeduct;
-                    if ($referrer->winning_balance < 0) {
-                        $referrer->winning_balance = 0; // Prevent negative
-                    }
+                    $referrer->winning_balance = max(0, $referrer->winning_balance - $refDeduct);
                 }
 
                 $referrer->recalculateBalance();
             }
         }
 
-        // Delete the main transaction
-        $transaction_d->delete();
+        // Soft delete the AdminAddedMoney record if exists
+        if ($adminAddedMoney) {
+            $adminAddedMoney->delete();
+        }
+
+        // Soft delete the main Transaction record
+        if ($transaction_d) {
+            $transaction_d->delete();
+        }
 
         return response()->json([
-            'message' => 'Transaction and related bonuses deleted successfully',
+            'status' => 'success',
+            'message' => 'Added money record and related bonuses successfully deleted. Amount deducted from deposit balance.',
             'user_balance' => $user->balance,
+            'deposit_balance' => $user->deposit_balance,
         ]);
     } catch (\Exception $e) {
-        // Handle errors gracefully
         return response()->json([
-            'message' => 'An error occurred',
+            'status' => 'error',
+            'message' => 'An error occurred while deleting the added money record.',
             'error' => $e->getMessage(),
         ], 500);
     }

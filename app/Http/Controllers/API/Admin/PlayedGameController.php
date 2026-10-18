@@ -982,71 +982,138 @@ public function Approved(Request $request)
             $user = User::where('mobile', $mobile)->first();
             $user_id = $user->id;
             $referrer_id = $user->referrer_id;
+            $previousBalance = $user->balance;
 
-            $updatedUser = \App\Services\WalletService::addDeposit($user, $amount, 'Add Money By Admin');
+            $transaction = \App\Services\WalletService::addDeposit($user, $amount, 'Add Money By Admin');
+            $freshUser = $user->fresh();
 
-            // Referral bonus logic is now centralized in WalletService::addDeposit
+            // Create separate record in admin_added_moneys table
+            $adminAddedMoney = \App\Models\AdminAddedMoney::create([
+                'user_id' => $user->id,
+                'admin_id' => auth()->id() ?? null,
+                'transaction_id' => $transaction->id ?? null,
+                'amount' => $amount,
+                'previous_balance' => $previousBalance,
+                'current_balance' => $freshUser->balance,
+                'description' => 'Add Money By Admin',
+                'status' => 'completed',
+            ]);
 
             return response()->json([
                 'status' => 200,
                 'message' => 'Money added to wallet successfully.',
-                'available_balance' => $updatedUser->balance
+                'data' => $adminAddedMoney,
+                'available_balance' => $freshUser->balance
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => 500,
-                'message' => 'An error occurred while adding money to the wallet.'
+                'message' => 'An error occurred while adding money to the wallet.',
+                'error' => $th->getMessage()
             ], 500);
         }
     }
-    
-    
-        // Route::get('all-money-added-list',[PlayedGameController::class,'All_Transaction']);
+
+    /**
+     * Fetch dedicated list of money added by admin (from admin_added_moneys table)
+     */
+    public function Admin_Added_Money_List(Request $request)
+    {
+        try {
+            $query = \App\Models\AdminAddedMoney::with(['user' => function ($q) {
+                $q->withTrashed();
+            }]);
+
+            if ($request->has('user_id') && !empty($request->input('user_id'))) {
+                $query->where('user_id', $request->input('user_id'));
+            }
+
+            if ($request->has('name') && !empty($request->input('name'))) {
+                $query->whereHas('user', function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->input('name') . '%');
+                });
+            }
+
+            if ($request->has('mobile') && !empty($request->input('mobile'))) {
+                $query->whereHas('user', function ($q) use ($request) {
+                    $q->where('mobile', 'like', '%' . $request->input('mobile') . '%');
+                });
+            }
+
+            $totalAddedAmount = (clone $query)->sum('amount');
+            $perPage = $request->input('per_page', 10);
+            $records = $query->orderBy('id', 'desc')->paginate($perPage);
+
+            foreach ($records as $item) {
+                $item->user_name = $item->user ? $item->user->name : 'Deleted User';
+                $item->user_mobile = $item->user ? $item->user->mobile : 'N/A';
+                $item->transaction_date = Carbon::parse($item->created_at)->setTimezone('Asia/Kolkata')->toDateTimeString();
+                $item->available_balance = $item->current_balance;
+                $item->transaction_type = 'credit';
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $records->items(),
+                'total_added_amount' => $totalAddedAmount,
+                'pagination' => [
+                    'current_page' => $records->currentPage(),
+                    'total_pages' => $records->lastPage(),
+                    'total_items' => $records->total(),
+                    'per_page' => $records->perPage(),
+                    'has_more_pages' => $records->hasMorePages(),
+                    'next_page_url' => $records->nextPageUrl(),
+                ],
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to fetch admin added money list.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
         
+    // Route::get('all-money-added-list',[PlayedGameController::class,'All_Transaction']);
+    public function All_Transaction(Request $request)
+    {
+        try {
+            // Start a query to fetch transactions with transaction_type 'credit'
+            $query = Transaction::where('transaction_type', 'credit');
 
+            // Apply filters based on user_id, name, and mobile number if provided in the request
+            if ($request->has('user_id')) {
+                $query->where('user_id', $request->input('user_id'));
+            }
 
+            if ($request->has('name')) {
+                $query->whereHas('user', function ($q) use ($request) {
+                    $q->where('name', 'like', '%' . $request->input('name') . '%');
+                });
+            }
 
+            if ($request->has('mobile')) {
+                $query->whereHas('user', function ($q) use ($request) {
+                    $q->where('mobile', 'like', '%' . $request->input('mobile') . '%');
+                });
+            }
 
+            // Calculate the total added amount for the filtered results
+            $totalAddedAmount = $query->sum('amount');
 
-public function All_Transaction(Request $request)
-{
-    try {
-        // Start a query to fetch transactions with transaction_type 'credit'
-        $query = Transaction::where('transaction_type', 'credit');
+            // Paginate the results and order by id in descending order
+            $perPage = $request->input('per_page', 10); // Number of results per page, default is 10
+            $currentPage = $request->input('page', 1); // Current page number, default is 1
+            $allTransactions = $query->orderBy('id', 'desc')->paginate($perPage);
 
-        // Apply filters based on user_id, name, and mobile number if provided in the request
-        if ($request->has('user_id')) {
-            $query->where('user_id', $request->input('user_id'));
-        }
+            // Loop through each transaction to fetch and append the user's name, mobile, and convert time to Asia timezone
+            foreach ($allTransactions as $transaction) {
+                $user_id = $transaction->user_id; // Get the user_id from the transaction
+                $userDetails = User::withTrashed()->where('id', $user_id)->select('name', 'mobile')->first(); // Fetch the user's name and mobile (with soft delete)
 
-        if ($request->has('name')) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->input('name') . '%');
-            });
-        }
-
-        if ($request->has('mobile')) {
-            $query->whereHas('user', function ($q) use ($request) {
-                $q->where('mobile', 'like', '%' . $request->input('mobile') . '%');
-            });
-        }
-
-        // Calculate the total added amount for the filtered results
-        $totalAddedAmount = $query->sum('amount');
-
-        // Paginate the results and order by id in descending order
-        $perPage = $request->input('per_page', 10); // Number of results per page, default is 10
-        $currentPage = $request->input('page', 1); // Current page number, default is 1
-        $allTransactions = $query->orderBy('id', 'desc')->paginate($perPage);
-
-        // Loop through each transaction to fetch and append the user's name, mobile, and convert time to Asia timezone
-        foreach ($allTransactions as $transaction) {
-            $user_id = $transaction->user_id; // Get the user_id from the transaction
-            $userDetails = User::where('id', $user_id)->select('name', 'mobile')->first(); // Fetch the user's name and mobile
-
-            // Append user details to each transaction
-            $transaction->user_name = $userDetails->name;
-            $transaction->user_mobile = $userDetails->mobile;
+                // Append user details to each transaction
+                $transaction->user_name = $userDetails ? $userDetails->name : 'Deleted User';
+                $transaction->user_mobile = $userDetails ? $userDetails->mobile : 'N/A';
 
             // Convert the created_at timestamp to Asia/Kolkata timezone (should already be set in config/app.php)
             $transaction->created_at = Carbon::parse($transaction->created_at)->setTimezone('Asia/Kolkata')->toDateTimeString();

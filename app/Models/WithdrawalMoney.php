@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class WithdrawalMoney extends Model
+class WithdrawalMoney extends Model implements Auditable
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, \OwenIt\Auditing\Auditable;
 
     protected $table = 'withdrawal_money';
 
@@ -25,4 +27,9 @@ class WithdrawalMoney extends Model
         'qr_code_image',
         'payment_screenshot'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
+    }
 }

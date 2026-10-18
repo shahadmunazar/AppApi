@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class PlayGame extends Model
+class PlayGame extends Model implements Auditable
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes, \OwenIt\Auditing\Auditable;
 
     protected $table = 'play_games';
 
@@ -35,10 +37,10 @@ class PlayGame extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
     // PlayGame.php
-public function user()
-{
-    return $this->belongsTo(User::class, 'user_id');
-}
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id')->withTrashed();
+    }
 
 
 }
