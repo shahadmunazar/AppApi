@@ -612,7 +612,7 @@ if ($user->balance < $request_money) {
         $searchTerm = $request->input('search');
 
         // Build the query
-        $query = \App\Models\AddMoneyRequest::with(['user:id,name,mobile']) // Include only 'id', 'name', 'mobile' from the related user
+        $query = \App\Models\AddMoneyRequest::with(['user:id,name,mobile,balance,deposit_balance,winning_balance'])
             ->orderBy('id', 'DESC');
 
         if ($searchTerm) {
@@ -641,6 +641,10 @@ if ($user->balance < $request_money) {
                 'description' => 'Add money request',
                 'created_at' => $req->created_at,
                 'user' => $req->user,
+                'available_balance' => $req->user ? (string)$req->user->balance : '0.00',
+                'user_live_balance' => $req->user ? (string)$req->user->balance : '0.00',
+                'user_deposit_balance' => $req->user ? (string)$req->user->deposit_balance : '0.00',
+                'user_winning_balance' => $req->user ? (string)$req->user->winning_balance : '0.00',
             ];
         });
 

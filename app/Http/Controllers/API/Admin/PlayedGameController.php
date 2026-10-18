@@ -1050,6 +1050,11 @@ public function Approved(Request $request)
                 $item->transaction_date = Carbon::parse($item->created_at)->setTimezone('Asia/Kolkata')->toDateTimeString();
                 $item->available_balance = $item->current_balance;
                 $item->transaction_type = 'credit';
+
+                // Real-time live current balances of the user
+                $item->user_live_balance = $item->user ? (string)$item->user->balance : '0.00';
+                $item->user_deposit_balance = $item->user ? (string)$item->user->deposit_balance : '0.00';
+                $item->user_winning_balance = $item->user ? (string)$item->user->winning_balance : '0.00';
             }
 
             return response()->json([
@@ -1109,11 +1114,14 @@ public function Approved(Request $request)
             // Loop through each transaction to fetch and append the user's name, mobile, and convert time to Asia timezone
             foreach ($allTransactions as $transaction) {
                 $user_id = $transaction->user_id; // Get the user_id from the transaction
-                $userDetails = User::withTrashed()->where('id', $user_id)->select('name', 'mobile')->first(); // Fetch the user's name and mobile (with soft delete)
+                $userDetails = User::withTrashed()->where('id', $user_id)->select('name', 'mobile', 'balance', 'deposit_balance', 'winning_balance')->first(); // Fetch the user's name and mobile (with soft delete)
 
                 // Append user details to each transaction
                 $transaction->user_name = $userDetails ? $userDetails->name : 'Deleted User';
                 $transaction->user_mobile = $userDetails ? $userDetails->mobile : 'N/A';
+                $transaction->user_live_balance = $userDetails ? (string)$userDetails->balance : '0.00';
+                $transaction->user_deposit_balance = $userDetails ? (string)$userDetails->deposit_balance : '0.00';
+                $transaction->user_winning_balance = $userDetails ? (string)$userDetails->winning_balance : '0.00';
 
             // Convert the created_at timestamp to Asia/Kolkata timezone (should already be set in config/app.php)
             $transaction->created_at = Carbon::parse($transaction->created_at)->setTimezone('Asia/Kolkata')->toDateTimeString();
