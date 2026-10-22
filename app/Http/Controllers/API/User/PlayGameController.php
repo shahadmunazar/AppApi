@@ -911,15 +911,73 @@ public function DeleteAddMoney(Request $request)
             ], 400);
         }
 
-        // 3. Check if user played games using deposit balance since the deposit
+        // 3. User balance must not have decreased below balance at add
+        if ($currentBalanceAtAdd > 0 && ($user->deposit_balance < $currentBalanceAtAdd || $user->balance < $currentBalanceAtAdd) && ($currentBalanceAtAdd - $user->deposit_balance) > 0.01) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Cannot delete: User's balance has decreased since this money was added."
+            ], 400);
+        }
+
+        // 4. Check if subsequent admin added money or deposit exists
+        if ($adminAddedMoney) {
+            $hasSubsequentAdd = \App\Models\AdminAddedMoney::where('user_id', $user->id)
+                ->where('id', '>', $adminAddedMoney->id)
+                ->exists();
+            if ($hasSubsequentAdd) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Cannot delete: A newer money addition was made after this transaction. Only the latest untouched transaction can be deleted."
+                ], 400);
+            }
+        }
+        if ($transaction_d) {
+            $hasSubsequentTx = \App\Models\Transaction::where('user_id', $user->id)
+                ->where('id', '>', $transaction_d->id)
+                ->where('transaction_type', 'credit')
+                ->exists();
+            if ($hasSubsequentTx) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => "Cannot delete: A newer money addition was made after this transaction. Only the latest untouched transaction can be deleted."
+                ], 400);
+            }
+        }
+
+        // 5. Check if user played games since the deposit
         $playedGamesAfter = \App\Models\PlayGame::where('user_id', $user->id)
             ->where('created_at', '>=', $transactionDate)
             ->exists();
 
-        if ($playedGamesAfter && $currentBalanceAtAdd > 0 && $user->deposit_balance < $currentBalanceAtAdd && ($currentBalanceAtAdd - $user->deposit_balance) > 0.01) {
+        if ($playedGamesAfter) {
             return response()->json([
                 'status' => 'error',
-                'message' => "Cannot delete: The user has already placed bets or played games using this deposited money."
+                'message' => "Cannot delete: The user has already placed bets or played games since this money was added."
+            ], 400);
+        }
+
+        // 6. Check if any deduction / loss transactions occurred since the deposit
+        $deductionsAfter = \App\Models\Transaction::where('user_id', $user->id)
+            ->where('created_at', '>=', $transactionDate)
+            ->whereIn('transaction_type', ['loss', 'debit'])
+            ->exists();
+
+        if ($deductionsAfter) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Cannot delete: Money has already been deducted or used from the user's wallet since this transaction."
+            ], 400);
+        }
+
+        // 7. Check if withdrawal request occurred since the deposit
+        $withdrawalAfter = \App\Models\WithdrawalMoney::where('user_id', $user->id)
+            ->where('created_at', '>=', $transactionDate)
+            ->exists();
+
+        if ($withdrawalAfter) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Cannot delete: A withdrawal request was placed by the user since this money was added."
             ], 400);
         }
 

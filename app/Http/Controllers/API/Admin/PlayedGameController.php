@@ -1062,25 +1062,64 @@ public function Approved(Request $request)
                 $addedAmount = (float)$item->amount;
                 $currentBalanceAtAdd = (float)$item->current_balance;
 
-                if ($userDepositBal < $addedAmount || $userLiveBal < $addedAmount) {
-                    $item->is_used = true;
-                    $item->can_delete = false;
-                } elseif ($currentBalanceAtAdd > 0 && $userDepositBal < $currentBalanceAtAdd && ($currentBalanceAtAdd - $userDepositBal) > 0.01) {
-                    $item->is_used = true;
-                    $item->can_delete = false;
+                $isUsed = false;
+
+                if (!$item->user || $userDepositBal < $addedAmount || $userLiveBal < $addedAmount) {
+                    $isUsed = true;
+                } elseif ($currentBalanceAtAdd > 0 && ($userDepositBal < $currentBalanceAtAdd || $userLiveBal < $currentBalanceAtAdd) && ($currentBalanceAtAdd - $userDepositBal) > 0.01) {
+                    $isUsed = true;
                 } else {
-                    $hasPlayedAfter = \App\Models\PlayGame::where('user_id', $item->user_id)
-                        ->where('created_at', '>=', $item->created_at)
+                    // Check if another money addition has been made after this one for this user
+                    $hasSubsequentAdd = \App\Models\AdminAddedMoney::where('user_id', $item->user_id)
+                        ->where('id', '>', $item->id)
                         ->exists();
 
-                    if ($hasPlayedAfter && $currentBalanceAtAdd > 0 && $userDepositBal < $currentBalanceAtAdd) {
-                        $item->is_used = true;
-                        $item->can_delete = false;
+                    if ($hasSubsequentAdd) {
+                        $isUsed = true;
                     } else {
-                        $item->is_used = false;
-                        $item->can_delete = true;
+                        // Check if any credit transaction was added after this one
+                        $hasSubsequentDeposit = \App\Models\Transaction::where('user_id', $item->user_id)
+                            ->where('created_at', '>', $item->created_at)
+                            ->where('transaction_type', 'credit')
+                            ->where('id', '!=', $item->transaction_id ?? 0)
+                            ->exists();
+
+                        if ($hasSubsequentDeposit) {
+                            $isUsed = true;
+                        } else {
+                            // Check if user placed any bets or played games after this addition
+                            $hasPlayedAfter = \App\Models\PlayGame::where('user_id', $item->user_id)
+                                ->where('created_at', '>=', $item->created_at)
+                                ->exists();
+
+                            if ($hasPlayedAfter) {
+                                $isUsed = true;
+                            } else {
+                                // Check if any deduction occurred after this addition
+                                $hasDeductionAfter = \App\Models\Transaction::where('user_id', $item->user_id)
+                                    ->where('created_at', '>=', $item->created_at)
+                                    ->whereIn('transaction_type', ['loss', 'debit'])
+                                    ->exists();
+
+                                if ($hasDeductionAfter) {
+                                    $isUsed = true;
+                                } else {
+                                    // Check if any withdrawal request occurred after this addition
+                                    $hasWithdrawalAfter = \App\Models\WithdrawalMoney::where('user_id', $item->user_id)
+                                        ->where('created_at', '>=', $item->created_at)
+                                        ->exists();
+
+                                    if ($hasWithdrawalAfter) {
+                                        $isUsed = true;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
+
+                $item->is_used = $isUsed;
+                $item->can_delete = !$isUsed;
             }
 
             return response()->json([
@@ -1155,25 +1194,51 @@ public function Approved(Request $request)
                 $addedAmount = (float)$transaction->amount;
                 $currentBalanceAtAdd = (float)$transaction->available_balance;
 
-                if ($userDepositBal < $addedAmount || $userLiveBal < $addedAmount) {
-                    $transaction->is_used = true;
-                    $transaction->can_delete = false;
-                } elseif ($currentBalanceAtAdd > 0 && $userDepositBal < $currentBalanceAtAdd && ($currentBalanceAtAdd - $userDepositBal) > 0.01) {
-                    $transaction->is_used = true;
-                    $transaction->can_delete = false;
+                $isUsed = false;
+
+                if (!$userDetails || $userDepositBal < $addedAmount || $userLiveBal < $addedAmount) {
+                    $isUsed = true;
+                } elseif ($currentBalanceAtAdd > 0 && ($userDepositBal < $currentBalanceAtAdd || $userLiveBal < $currentBalanceAtAdd) && ($currentBalanceAtAdd - $userDepositBal) > 0.01) {
+                    $isUsed = true;
                 } else {
-                    $hasPlayedAfter = \App\Models\PlayGame::where('user_id', $user_id)
-                        ->where('created_at', '>=', $transaction->created_at)
+                    // Check if another credit transaction was added after this one for this user
+                    $hasSubsequentAdd = \App\Models\Transaction::where('user_id', $user_id)
+                        ->where('id', '>', $transaction->id)
+                        ->where('transaction_type', 'credit')
                         ->exists();
 
-                    if ($hasPlayedAfter && $currentBalanceAtAdd > 0 && $userDepositBal < $currentBalanceAtAdd) {
-                        $transaction->is_used = true;
-                        $transaction->can_delete = false;
+                    if ($hasSubsequentAdd) {
+                        $isUsed = true;
                     } else {
-                        $transaction->is_used = false;
-                        $transaction->can_delete = true;
+                        $hasPlayedAfter = \App\Models\PlayGame::where('user_id', $user_id)
+                            ->where('created_at', '>=', $transaction->created_at)
+                            ->exists();
+
+                        if ($hasPlayedAfter) {
+                            $isUsed = true;
+                        } else {
+                            $hasDeductionAfter = \App\Models\Transaction::where('user_id', $user_id)
+                                ->where('created_at', '>=', $transaction->created_at)
+                                ->whereIn('transaction_type', ['loss', 'debit'])
+                                ->exists();
+
+                            if ($hasDeductionAfter) {
+                                $isUsed = true;
+                            } else {
+                                $hasWithdrawalAfter = \App\Models\WithdrawalMoney::where('user_id', $user_id)
+                                    ->where('created_at', '>=', $transaction->created_at)
+                                    ->exists();
+
+                                if ($hasWithdrawalAfter) {
+                                    $isUsed = true;
+                                }
+                            }
+                        }
                     }
                 }
+
+                $transaction->is_used = $isUsed;
+                $transaction->can_delete = !$isUsed;
 
             // Convert the created_at timestamp to Asia/Kolkata timezone (should already be set in config/app.php)
             $transaction->created_at = Carbon::parse($transaction->created_at)->setTimezone('Asia/Kolkata')->toDateTimeString();
