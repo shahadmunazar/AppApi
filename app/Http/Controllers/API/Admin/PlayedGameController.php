@@ -1309,6 +1309,8 @@ public function Delete_Game_History($id)
     }
 }
 
+
+
 public function UserStatus(Request $request)
 {
     try {
